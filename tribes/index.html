@@ -1,0 +1,97 @@
+<!doctype html> 
+<html lang="en"> 
+<head> 
+	<meta charset="UTF-8" />
+	<title>Ocean Tribes</title>
+	<script type="text/javascript" src="phaser.min.js"></script>
+	<script type="text/javascript" src="perlin.js"></script>
+	<script type="text/javascript" src="view.js"></script>
+	<script type="text/javascript" src="oceantribes.js"></script>
+	<script type="text/javascript" src="universe.js"></script>
+	<script type="text/javascript" src="island.js"></script>
+	<script type="text/javascript" src="tribe.js"></script>
+	<script type="text/javascript" src="fleet.js"></script>
+	<script type="text/javascript" src="fromto.js"></script>
+	<script type="text/javascript" src="islandview.js"></script>
+	<script type="text/javascript" src="fleetview.js"></script>
+	<script type="text/javascript" src="mapview.js"></script>
+	<script type="text/javascript" src="dirline.js"></script>
+	<script type="text/javascript" src="rangevalue.js"></script>
+	<script type="text/javascript" src="islandpanel.js"></script>
+	<script type="text/javascript" src="migratepanel.js"></script>
+	<script type="text/javascript" src="fleetpanel.js"></script>
+	<script type="text/javascript" src="aiturnpanel.js"></script>
+	<script type="text/javascript" src="rgbutton.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<script type="text/javascript">
+
+var game = new Phaser.Game( 800, 800, Phaser.AUTO, '', {preload: preload, create: create, update: update} );
+
+function preload() {
+	game.scale.scaleMode = Phaser.ScaleManager.RESIZE;
+	game.stage.backgroundColor = '#003344';
+
+	game.load.image( 'ocean', 'assets/ocean.png' );
+	game.load.spritesheet( 'flag', 'assets/flags.png', 16, 16 );
+	game.load.spritesheet( 'fleet', 'assets/fleet.png', 24, 24 );
+	game.load.image( 'dashed', 'assets/dashed.png' );
+
+	game.load.bitmapFont( 'font5', 'assets/font5.png', 'assets/font5.xml' );
+	game.load.bitmapFont( 'font8', 'assets/font8.png', 'assets/font8.xml' );
+	game.load.bitmapFont( 'font12', 'assets/font12.png', 'assets/font12.xml' );
+	game.load.bitmapFont( 'font15', 'assets/font15.png', 'assets/font15.xml' );
+}
+
+function create() {
+
+	while (!Universe.build( {nIslands: 40, tribes: Tribe.ALL()} ));
+
+	game.world.add( new OceanTribes( game ) );
+
+	game.scale.onSizeChange.add( function() {
+		oceanTribes.resize( game.width, game.height );
+	} );
+	game.scale.onSizeChange.dispatch();
+
+	oceanTribes.switchPanel( IslandPanel ).select( Universe.player.home );
+	oceanTribes.map.updateFieldOfView( Universe.player );
+}
+
+function update() {
+	if (Universe.curTribe != Universe.player) {
+		if (!(oceanTribes.panel instanceof AITurnPanel)) {
+			oceanTribes.switchPanel( AITurnPanel );
+		}
+		oceanTribes.panel.setPlayer( Universe.curTribe );
+
+		Universe.curTribe.think();
+	} else {
+		if (oceanTribes.panel instanceof AITurnPanel) {
+			if (oceanTribes.map.selected instanceof Island) {
+				oceanTribes.switchPanel( IslandPanel ).select( oceanTribes.map.selected );
+			} else if (oceanTribes.map.selected instanceof Fleet) {
+				if (oceanTribes.map.selected.isAlive) {
+					oceanTribes.switchPanel( FleetPanel ).select( oceanTribes.map.selected );
+				} else {
+					oceanTribes.switchPanel( IslandPanel ).select( oceanTribes.map.selected.to );
+				}
+			} else {
+				oceanTribes.switchPanel( IslandPanel ).select( Universe.player.home );
+			}
+
+			oceanTribes.map.updateFieldOfView( Universe.player );
+		}
+	}
+}
+
+</script>
+
+</body>
+</html>
