@@ -32,15 +32,14 @@ MapView.prototype.createChildren = function() {
 
 	this.ocean = game.add.tileSprite( 0, 0, 100, 100, 'ocean', null, this );
 	this.ocean.autoScroll( 4, 4 );
+	this.ocean.visible = false;
 
 	this.objects = game.add.group( this );
 
 	this.graphics = game.add.graphics( 0, 0, this.objects );
 
 	this.line = new DirLine( game );
-	this.line.x = 100;
-	this.line.y = 100;
-	this.line.width = 500;
+	this.line.alpha = 0.3;
 	this.objects.add( this.line );
 
 	for (var i in Universe.islands) {
@@ -92,7 +91,7 @@ MapView.prototype.select = function( object ) {
 
 	if (object instanceof Island) {
 		var island = this.islands[object.id];
-		this.graphics.lineStyle( 2, 0xFFFFFF );
+		this.graphics.lineStyle( 4, 0xFFFFFF, 0.3 );
 		this.graphics.drawCircle( island.x, island.y, Island.MAP_SIZE * 2 * this.zoom );
 	} else if (object instanceof Fleet && object.tribe == Universe.player) {	
 		console.log( 'draw line' );	
@@ -105,7 +104,7 @@ MapView.prototype.select = function( object ) {
 MapView.prototype.link = function( island1, island2 ) {
 
 	this.graphics.clear();
-	this.graphics.lineStyle( 2, 0xFFFFFF );
+	this.graphics.lineStyle( 4, 0xFFFFFF, 0.3 );
 	this.line.visible = false;
 
 	var r = Island.MAP_SIZE * this.zoom / 1.4;
@@ -119,7 +118,7 @@ MapView.prototype.link = function( island1, island2 ) {
 		this.graphics.drawCircle( isl2.x, isl2.y, r*2 );
 	}
 	if (island1 && island2) {
-		this.line.draw( isl1, isl2 );
+		this.line.draw( isl1, isl2, r + 2 );
 	}
 }
 
@@ -137,7 +136,12 @@ MapView.prototype.addFleet = function( fleet ) {
 
 MapView.prototype.updateFieldOfView = function( tribe ) {
 	for (i in tribe.knownIslands) {
-		tribe.knownIslands[i].view.visible = true;
+		var view = tribe.knownIslands[i].view;
+		if (!view.visible) {
+			view.alpha = 0;
+			view.visible = true;
+			game.add.tween( view ).to( {alpha: 1}, 1000, Phaser.Easing.Quadratic.InOut, true );
+		}
 	}
 	this.adjustWindow( tribe );
 }
