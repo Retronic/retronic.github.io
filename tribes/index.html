@@ -5,23 +5,28 @@
 	<title>Ocean Tribes</title>
 	<script type="text/javascript" src="phaser.min.js"></script>
 	<script type="text/javascript" src="perlin.js"></script>
-	<script type="text/javascript" src="view.js"></script>
+	<script type="text/javascript" src="ui/view.js"></script>
+	<script type="text/javascript" src="panels/panel.js"></script>
 	<script type="text/javascript" src="oceantribes.js"></script>
 	<script type="text/javascript" src="universe.js"></script>
+	<script type="text/javascript" src="buildings.js"></script>
 	<script type="text/javascript" src="island.js"></script>
 	<script type="text/javascript" src="tribe.js"></script>
 	<script type="text/javascript" src="fleet.js"></script>
-	<script type="text/javascript" src="fromto.js"></script>
+	<script type="text/javascript" src="ui/fromto.js"></script>
 	<script type="text/javascript" src="islandview.js"></script>
 	<script type="text/javascript" src="fleetview.js"></script>
 	<script type="text/javascript" src="mapview.js"></script>
 	<script type="text/javascript" src="dirline.js"></script>
-	<script type="text/javascript" src="rangevalue.js"></script>
-	<script type="text/javascript" src="islandpanel.js"></script>
-	<script type="text/javascript" src="migratepanel.js"></script>
-	<script type="text/javascript" src="fleetpanel.js"></script>
-	<script type="text/javascript" src="aiturnpanel.js"></script>
-	<script type="text/javascript" src="rgbutton.js"></script>
+	<script type="text/javascript" src="ui/rangevalue.js"></script>
+	<script type="text/javascript" src="panels/islandpanel.js"></script>
+	<script type="text/javascript" src="panels/islandmainpanel.js"></script>
+	<script type="text/javascript" src="panels/migratepanel.js"></script>
+	<script type="text/javascript" src="panels/constructpanel.js"></script>
+	<script type="text/javascript" src="panels/fleetpanel.js"></script>
+	<script type="text/javascript" src="panels/aiturnpanel.js"></script>
+	<script type="text/javascript" src="ui/rgbutton.js"></script>
+	<script type="text/javascript" src="ui/progressbar.js"></script>
     <style type="text/css">
         body {
             margin: 0;
@@ -60,7 +65,7 @@ function create() {
 	} );
 	game.scale.onSizeChange.dispatch();
 
-	oceanTribes.switchPanel( IslandPanel ).select( Universe.player.home );
+	oceanTribes.switchPanel( IslandMainPanel ).select( Universe.player.home );
 	oceanTribes.map.updateFieldOfView( Universe.player );
 }
 
@@ -75,15 +80,15 @@ function update() {
 	} else {
 		if (oceanTribes.panel instanceof AITurnPanel) {
 			if (oceanTribes.map.selected instanceof Island) {
-				oceanTribes.switchPanel( IslandPanel ).select( oceanTribes.map.selected );
+				oceanTribes.switchPanel( IslandMainPanel ).select( oceanTribes.map.selected );
 			} else if (oceanTribes.map.selected instanceof Fleet) {
 				if (oceanTribes.map.selected.isAlive) {
 					oceanTribes.switchPanel( FleetPanel ).select( oceanTribes.map.selected );
 				} else {
-					oceanTribes.switchPanel( IslandPanel ).select( oceanTribes.map.selected.to );
+					oceanTribes.switchPanel( IslandMainPanel ).select( oceanTribes.map.selected.to );
 				}
 			} else {
-				oceanTribes.switchPanel( IslandPanel ).select( Universe.player.home );
+				oceanTribes.switchPanel( IslandMainPanel ).select( Universe.player.home );
 			}
 
 			oceanTribes.map.updateFieldOfView( Universe.player );

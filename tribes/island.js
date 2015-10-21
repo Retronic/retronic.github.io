@@ -17,6 +17,10 @@ function Island( x, y, params ) {
 	this.cliffs		= params.cliffs || false;
 
 	this.tribe = null;
+	this.buildings = null;
+
+	this.curTask = null;
+	this.taskProgress = 0;
 
 	this.onChanged = new Phaser.Signal();
 
@@ -35,7 +39,7 @@ Island.POOR		= -1;
 Island.MAP_SIZE	= 40;
 
 Island.prototype.grow = function() {
-	if (this.population) {
+	if (this.population && this.has( Buildings.GARRISON )) {
 		var grow = this.population * 0.1 * Math.sqrt( 1 - this.population / this.size );
 		if (this.fertility == Island.BARREN) {
 			grow *= 0.5;
@@ -46,6 +50,15 @@ Island.prototype.grow = function() {
 		if (newPop != this.population) {
 			this.population = newPop;
 			this.onChanged.dispatch();
+		}
+	}
+
+	if (this.curTask) {
+		this.taskProgress += this.getProduction();
+		if (this.taskProgress >= Buildings[this.curTask].cost) {
+			console.log( this.tribe.name, this.name, ":", this.curTask, "is built" );
+			this.buildings.push( this.curTask );
+			this.curTask = null;
 		}
 	}
 }
@@ -101,6 +114,33 @@ Island.prototype.buildMap = function() {
 		}
 
 	} while (square < limit);
+}
+
+Island.prototype.colonize = function( tribe ) {
+	tribe.addIsland( this, 1 );
+
+	this.buildings = [];
+
+	this.curTask = Buildings.GARRISON;
+	this.taskProgress = 0;
+}
+
+Island.prototype.has = function( building ) {
+	return this.buildings.indexOf( building ) != -1;
+}
+
+Island.prototype.canLaunch = function() {
+	return this.population >= 2 && this.has( Buildings.SHIPYARD ) && !this.launched;
+}
+
+Island.prototype.getProduction = function() {
+	var prod = Math.floor( this.population );
+	if (this.minerals == Island.POOR) {
+		prod *= 0.5;
+	} else if (this.minerals == Island.RICH) {
+		prod *= 1.5;
+	}
+	return prod;
 }
 
 Island.randomName = function() {

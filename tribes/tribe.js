@@ -35,6 +35,7 @@ Tribe.prototype.process = function() {
 Tribe.prototype.grow = function() {
 	for (var i in this.islands) {
 		var island = this.islands[i];
+		island.launched = false;
 		island.grow();
 	}
 }
@@ -50,6 +51,7 @@ Tribe.prototype.launch = function( tribe, from, to, size ) {
 	var fleet = new Fleet( this, from, to, size, Universe.time2sail( tribe, from, to ) );
 	this.fleets[fleet.id] = fleet;
 	from.population -= size;
+	from.launched = true;
 
 	oceanTribes.map.addFleet( fleet );
 
@@ -60,7 +62,7 @@ Tribe.prototype.think = function() {
 
 	var ids1 = [];
 	for (var i in this.islands) {
-		if (this.islands[i].population > 1) {
+		if (this.islands[i].canLaunch()) {
 			ids1.push( i );
 		}
 	}
@@ -72,7 +74,7 @@ Tribe.prototype.think = function() {
 		}
 	}
 
-	if (ids2.length) {
+	if (ids1.length && ids2.length) {
 		var src = this.islands[ids1[Math.floor(Math.random() * ids1.length)]];
 		var dst = this.knownIslands[ids2[Math.floor(Math.random() * ids2.length)]];
 		this.launch( this, src, dst, 1 + Math.floor(Math.random() * src.population / 2) );
@@ -86,6 +88,7 @@ Tribe.prototype.addIsland = function( island, population ) {
 	this.islands[island.id] = island;
 	if (!this.home) {
 		this.home = island;
+		this.home.buildings = [Buildings.GARRISON,Buildings.SHIPYARD];
 	}
 
 	island.tribe = this;

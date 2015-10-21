@@ -40,7 +40,7 @@ Fleet.prototype.arrive = function() {
 
 	if (this.to.tribe == null) {
 
-		this.tribe.addIsland( this.to, Math.min( this.size, this.to.size ) );
+		this.to.colonize( this.tribe );
 		
 	} else if (this.to.tribe == this.tribe) {
 
