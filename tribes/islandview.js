@@ -20,21 +20,28 @@ function IslandView( game, island ) {
 	for (var i=1; i < Island.MAP_SIZE-2; i++) {
 		for (var j=1; j < Island.MAP_SIZE-2; j++) {
 			if (island.map[i][j]) {
-				if (!island.map[i-1][j] || !island.map[i+1][j] || !island.map[i][j-1] || !island.map[i][j+1]) {
-					//073a4b
-					bmp.setPixel( j, i, 0x09, 0x4f, 0x66, false );
-				} else {
-					bmp.setPixel( j, i, 0x44, 0x88, 0x44, false );
-				}
+				bmp.setPixel( j, i, 0xff, 0xff, 0xff, false );
 			}
 		}
 	}
 	bmp.context.putImageData( bmp.imageData, 0, 0 );
 
+	var angle = Math.random() * 360;
+
+	var bmp1 = game.add.bitmapData( Island.MAP_SIZE, Island.MAP_SIZE, Universe.id() );
+	bmp1.copy( bmp );
+	this.shore = game.add.image( 0, 0, bmp1, null, this );
+	this.shore.anchor.set( 0.5, 0.5 );
+	this.shore.pivot.set( 0.5, 0.5 );
+	this.shore.angle = angle;
+	this.shore.tint = 0x094f66;
+
 	this.button = new Phaser.Button( game, 0, 0, bmp, this.onButtonClick, this );
+	this.button.smoothed = false;
 	this.button.anchor.set( 0.5, 0.5 );
 	this.button.pivot.set( 0.5, 0.5 );
-	this.button.angle = Math.random() * 360;
+	this.button.angle = angle;
+	this.button.tint = 0x448844;
 	this.addChild( this.button );
 
 	this.updateSize();
@@ -73,6 +80,7 @@ IslandView.prototype.setZoom = function( value ) {
 IslandView.prototype.updateSize = function() {
 	var size = 2 * this._zoom;
 	this.button.scale.set( size, size );
+	this.shore.scale.set( size * 1.2, size * 1.2 );
 }
 
 IslandView.prototype.refresh = function() {

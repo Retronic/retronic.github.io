@@ -139,6 +139,7 @@ IslandPanel.prototype.select = function( island, refresh ) {
 		this.image.anchor.setTo( 0.5, 0.5 );
 		this.image.pivot.setTo( 0.5, 0.5 );
 		this.image.angle = this.island.view.button.angle;
+		this.image.tint = this.island.view.button.tint;
 	} else {
 		this.image = null;
 	}
