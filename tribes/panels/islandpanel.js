@@ -23,8 +23,10 @@ IslandPanel.prototype.createChildren = function() {
 	this.name.smoothed = false;
 	this.name.align = 'center';
 
-	this.info = game.add.bitmapText( 0, 0, "font12", "", 12, this );
+	this.info = game.add.bitmapText( 0, 0, "font8", "", 8, this );
 	this.info.smoothed = false;
+	this.info.align = 'right';
+
 }
 
 IslandPanel.prototype.layout = function() {
@@ -46,8 +48,8 @@ IslandPanel.prototype.layout = function() {
 		this.image.scale.setTo( 5, 5 );
 	}
 
-	this.info.x = (this.reqWidth - this.info.textWidth) / 2;
-	this.info.y = p + m + Panel.MARGIN;
+	this.info.x = this.reqWidth - this.info.textWidth - Panel.MARGIN - Panel.LINE*2;
+	this.info.y = p + m - Panel.LINE*2 - this.info.textHeight;
 }
 
 IslandPanel.prototype.mapClicked = function( object ) {
@@ -91,7 +93,7 @@ IslandPanel.prototype.select = function( island, refresh ) {
 	} else if (island.minerals == Island.POOR) {
 		type.push( "mineral poor" );
 	}
-	this.info.text = type.join( ', ' ) || 'normal';
+	this.info.text = type.join( '\n' ) || 'normal';
 
 	this.image = game.add.image( 0, 0, this.island.view.button.texture, null, this );
 	this.image.anchor.setTo( 0.5, 0.5 );

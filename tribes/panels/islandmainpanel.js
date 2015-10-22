@@ -33,7 +33,7 @@ IslandMainPanel.prototype.layout = function() {
 
 	this.migrate.resize( this.reqWidth - Panel.MARGIN*2, RGButton.HEIGHT );
 	this.migrate.x = (this.reqWidth - this.migrate.width) / 2;
-	this.migrate.y = this.construct.bottom + Panel.MARGIN;
+	this.migrate.y = this.endTurn.y - this.construct.height - Panel.MARGIN;
 }
 
 IslandMainPanel.prototype.select = function( island, refresh ) {
