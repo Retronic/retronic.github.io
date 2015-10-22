@@ -6,6 +6,7 @@
 	<script type="text/javascript" src="phaser.min.js"></script>
 	<script type="text/javascript" src="perlin.js"></script>
 	<script type="text/javascript" src="ui/view.js"></script>
+	<script type="text/javascript" src="ui/textview.js"></script>
 	<script type="text/javascript" src="panels/panel.js"></script>
 	<script type="text/javascript" src="oceantribes.js"></script>
 	<script type="text/javascript" src="universe.js"></script>
@@ -25,6 +26,7 @@
 	<script type="text/javascript" src="panels/constructpanel.js"></script>
 	<script type="text/javascript" src="panels/fleetpanel.js"></script>
 	<script type="text/javascript" src="panels/aiturnpanel.js"></script>
+	<script type="text/javascript" src="panels/tribepanel.js"></script>
 	<script type="text/javascript" src="ui/rgbutton.js"></script>
 	<script type="text/javascript" src="ui/progressbar.js"></script>
     <style type="text/css">
@@ -69,30 +71,20 @@ function create() {
 	oceanTribes.map.updateFieldOfView( Universe.player );
 }
 
+var lastTribe = null;
 function update() {
-	if (Universe.curTribe != Universe.player) {
-		if (!(oceanTribes.panel instanceof AITurnPanel)) {
-			oceanTribes.switchPanel( AITurnPanel );
-		}
-		oceanTribes.panel.setPlayer( Universe.curTribe );
 
-		Universe.curTribe.think();
-	} else {
-		if (oceanTribes.panel instanceof AITurnPanel) {
-			if (oceanTribes.map.selected instanceof Island) {
-				oceanTribes.switchPanel( IslandMainPanel ).select( oceanTribes.map.selected );
-			} else if (oceanTribes.map.selected instanceof Fleet) {
-				if (oceanTribes.map.selected.isAlive) {
-					oceanTribes.switchPanel( FleetPanel ).select( oceanTribes.map.selected );
-				} else {
-					oceanTribes.switchPanel( IslandMainPanel ).select( oceanTribes.map.selected.to );
-				}
-			} else {
-				oceanTribes.switchPanel( IslandMainPanel ).select( Universe.player.home );
-			}
+	if (Universe.curTribe != lastTribe) {
+		oceanTribes.tribePanel.select( Universe.curTribe );
+		lastTribe = Universe.curTribe;
 
+		if (Universe.curTribe == Universe.player) {
 			oceanTribes.map.updateFieldOfView( Universe.player );
 		}
+	}
+
+	if (Universe.curTribe != Universe.player) {
+		Universe.curTribe.think();
 	}
 }
 

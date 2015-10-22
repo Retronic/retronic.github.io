@@ -1,15 +1,15 @@
 function MigratePanel( game ) {
-	Panel.call( this, game );
+	IslandPanel.call( this, game );
 
 	this.originSet = null;
 }
 
-MigratePanel.prototype = Object.create( Panel.prototype );
+MigratePanel.prototype = Object.create( IslandPanel.prototype );
 MigratePanel.prototype.constructor = MigratePanel;
 
 MigratePanel.prototype.createChildren = function() {
 
-	Panel.prototype.createChildren.call( this );
+	IslandPanel.prototype.createChildren.call( this );
 
 	this.fromTo = new FromTo( game );
 	this.addChild( this.fromTo );
@@ -30,11 +30,11 @@ MigratePanel.prototype.createChildren = function() {
 
 MigratePanel.prototype.layout = function() {
 
-	Panel.prototype.layout.call( this );
+	IslandPanel.prototype.layout.call( this );
 
 	this.fromTo.resize( this.reqWidth - Panel.MARGIN*2, 0 );
 	this.fromTo.x = Panel.MARGIN;
-	this.fromTo.y = Panel.MARGIN;
+	this.fromTo.y = this.sectionTop + Panel.MARGIN;
 
 	this.size.resize( this.reqWidth - Panel.MARGIN*2, RGButton.HEIGHT );
 	this.size.x = Panel.MARGIN;
@@ -81,6 +81,7 @@ MigratePanel.prototype.migrateFrom = function( island ) {
 	this.fromTo.from = island;
 
 	if (this.originSet == null) {
+		this.select( island );
 		this.originSet = true;
 		this.size.setRange( 1, Math.floor(island.population / 2), Math.floor(island.population / 2) );
 	}
@@ -92,6 +93,7 @@ MigratePanel.prototype.migrateTo = function( island ) {
 	this.fromTo.to = island;
 
 	if (this.originSet == null) {
+		this.select( island );
 		this.originSet = false;
 		this.size.setRange( 1, island.tribe ? island.size : 1, island.size );
 	}

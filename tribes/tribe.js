@@ -19,6 +19,10 @@ function Tribe( params ) {
 
 	// Map of all fleets launched by this tribe
 	this.fleets = {};
+
+	this.gold = 1000;
+	this.tech = 1;
+	this.progress = 0;
 }
 
 Tribe.NORSE	= function() { return new Tribe( {name: 'Norse', flag: 0, color: 0xff4040} ) };
@@ -115,6 +119,7 @@ Tribe.prototype.updateIslandsVisibility = function() {
 			var isl2 = Universe.islands[j];
 			if (Universe.distance2( isl1, isl2 ) < r2) {
 				this.knownIslands[j] = isl2;
+				console.log( isl2.name );
 			}
 		}
 	}

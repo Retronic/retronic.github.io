@@ -46,6 +46,11 @@ FleetView.prototype.refresh = function() {
 	if (this.tween) {
 		this.tween.stop();
 		this.tween = game.add.tween( this ).to( {x: px, y: py}, 300, null, true );
+		if (fleet.tribe == Universe.player && oceanTribes.map.selected == fleet) {
+			this.tween.onUpdateCallback( function() {
+				oceanTribes.map.select( fleet );
+			}, this );
+		}
 	} else {
 		this.x = px;
 		this.y = py;

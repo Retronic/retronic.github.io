@@ -19,28 +19,30 @@ IslandPanel.prototype.createChildren = function() {
 
 	Panel.prototype.createChildren.call( this );
 
-	this.name = game.add.bitmapText( 0, Panel.MARGIN, "font12", "", 12, this );
-	this.name.smoothed = false;
-	this.name.align = 'center';
+	this.name = new TextView( game, '', 'font12', 12, 'center' );
+	this.name.y = Panel.MARGIN;
+	this.add( this.name );
 
 	this.info = game.add.bitmapText( 0, 0, "font8", "", 8, this );
 	this.info.smoothed = false;
 	this.info.align = 'right';
 
+	this.buildingsList = game.add.bitmapText( 0, 0, "font8", "", 8, this );
 }
 
 IslandPanel.prototype.layout = function() {
 
 	Panel.prototype.layout.call( this );
 
-	this.name.x = Math.floor( (this.width - this.name.width) / 2 );
+	this.name.resize( this.reqWidth, 0 );
 
 	var m = this.reqWidth - Panel.MARGIN*2;
-	var p = this.name.y + this.name.textHeight + Panel.MARGIN;
+	var p = this.name.bottom + Panel.MARGIN;
 	this.bg.beginFill( 0xFFFFFF );
 	this.bg.drawRect( Panel.MARGIN, p, m, m );
 	this.bg.beginFill( 0x003344 );
 	this.bg.drawRect( Panel.MARGIN + Panel.LINE, p + Panel.LINE, m - Panel.LINE*2, m - Panel.LINE*2 );
+	this.sectionTop = p + m;
 
 	if (this.image) {
 		this.image.x = this.reqWidth / 2;
@@ -50,6 +52,9 @@ IslandPanel.prototype.layout = function() {
 
 	this.info.x = this.reqWidth - this.info.textWidth - Panel.MARGIN - Panel.LINE*2;
 	this.info.y = p + m - Panel.LINE*2 - this.info.textHeight;
+
+	this.buildingsList.x = Panel.MARGIN + Panel.LINE*2;
+	this.buildingsList.y = p + Panel.LINE*2;
 }
 
 IslandPanel.prototype.mapClicked = function( object ) {
@@ -76,10 +81,10 @@ IslandPanel.prototype.select = function( island, refresh ) {
 
 	if (island.tribe) {
 		this.name.text = island.name + '\n' + island.tribe.name + ': ' + Math.round(island.population) + '/' + island.size;
-		this.name.tint = island.tribe.color;
+		this.name.color = island.tribe.color;
 	} else {
 		this.name.text = island.name + '\n' + 'Uninhabited: 0/' + island.size;
-		this.name.tint = 0xFFFFFF;
+		this.name.color = 0xFFFFFF;
 	}
 
 	var type = [];
@@ -94,6 +99,12 @@ IslandPanel.prototype.select = function( island, refresh ) {
 		type.push( "mineral poor" );
 	}
 	this.info.text = type.join( '\n' ) || 'normal';
+
+	if (island.tribe == Universe.player) {
+		this.buildingsList.text = island.buildings.join( '\n' );
+	} else {
+		this.buildingsList.text = "";
+	}
 
 	this.image = game.add.image( 0, 0, this.island.view.button.texture, null, this );
 	this.image.anchor.setTo( 0.5, 0.5 );

@@ -9,10 +9,14 @@ IslandMainPanel.prototype.createChildren = function() {
 
 	IslandPanel.prototype.createChildren.call( this );
 
+	this.taskLabel = new TextView( game, "Current task", "font12", 12, "center" );
+	this.taskLabel.color = 0xffff88;
+	this.add( this.taskLabel );
+
 	this.endTurn = new RGButton( game, "End Turn", Universe.endTurn, Universe );
 	this.addChild( this.endTurn );
 
-	this.construct = new ProgressBar( game, "Construct", this.onConstruct, this );
+	this.construct = new ProgressBar( game, "Task", this.onTask, this );
 	this.addChild( this.construct );
 
 	this.migrate = new RGButton( game, "Migrate", this.onMigrate, this );
@@ -23,13 +27,16 @@ IslandMainPanel.prototype.layout = function() {
 
 	IslandPanel.prototype.layout.call( this );
 
+	this.taskLabel.resize( this.reqWidth, 30 );
+	this.taskLabel.y = this.sectionTop + Panel.MARGIN;
+
 	this.endTurn.resize( this.reqWidth - Panel.MARGIN*2, RGButton.HEIGHT );
 	this.endTurn.x = (this.reqWidth - this.endTurn.width) / 2;
 	this.endTurn.y = this.reqHeight - Panel.MARGIN - this.endTurn.height;
 
 	this.construct.resize( this.reqWidth - Panel.MARGIN*2, RGButton.HEIGHT );
 	this.construct.x = (this.reqWidth - this.construct.width) / 2;
-	this.construct.y = this.info.y + this.info.textHeight + Panel.MARGIN;
+	this.construct.y = this.taskLabel.bottom + Panel.MARGIN;
 
 	this.migrate.resize( this.reqWidth - Panel.MARGIN*2, RGButton.HEIGHT );
 	this.migrate.x = (this.reqWidth - this.migrate.width) / 2;
@@ -41,14 +48,16 @@ IslandMainPanel.prototype.select = function( island, refresh ) {
 	IslandPanel.prototype.select.call( this, island, refresh );
 
 	this.migrate.visible = (island.tribe != Universe.player) || island.canLaunch();
-	this.construct.visible = (island.tribe == Universe.player);
+	this.construct.visible = this.taskLabel.visible = (island.tribe == Universe.player);
 	if (this.construct.visible) {
 		if (island.curTask) {
-			this.construct.label = island.curTask[0].toUpperCase() + island.curTask.substr( 1 );
-			this.construct.maxValue = Buildings[island.curTask].cost;
-			this.construct.value = island.taskProgress;
+			var name = island.curTask.name;
+			name = name[0].toUpperCase() + name.substr( 1 );
+			this.construct.label = name;
+			this.construct.maxValue = Buildings[island.curTask.name].cost;
+			this.construct.value = island.curTask.progress;
 		} else {
-			this.construct.label = "Construct";
+			this.construct.label = "None";
 			this.construct.value = NaN;
 		}
 	}
@@ -71,6 +80,6 @@ IslandMainPanel.prototype.onMigrate = function() {
 	}
 }
 
-IslandMainPanel.prototype.onConstruct = function() {
+IslandMainPanel.prototype.onTask = function() {
 	oceanTribes.switchPanel( ConstructPanel ).select( this.island );
 }

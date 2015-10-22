@@ -9,6 +9,11 @@ ConstructPanel.prototype.createChildren = function() {
 
 	IslandPanel.prototype.createChildren.call( this );
 
+	this.header = new TextView( game, "Choose task", "font12", 12, "center" );
+	this.header.color = 0xffff88;
+	this.add( this.header );
+
+	// For all buttons we create a group so we could easily remove them
 	this.buildings = game.add.group( this );
 
 	this.cancel = new RGButton( game, "Cancel", this.onCancel, this );
@@ -20,10 +25,13 @@ ConstructPanel.prototype.layout = function() {
 	IslandPanel.prototype.layout.call( this );
 
 	this.cancel.resize( this.reqWidth - Panel.MARGIN*2, RGButton.HEIGHT );
-	this.cancel.x = (this.reqWidth - this.cancel.width) / 2;
+	this.cancel.x =	Panel.MARGIN;
 	this.cancel.y = this.reqHeight - Panel.MARGIN - this.cancel.height;
 
-	var pos = this.info.y + this.info.textHeight + Panel.MARGIN;
+	this.header.resize( this.reqWidth, 0 );
+	this.header.y = this.sectionTop + Panel.MARGIN;
+
+	var pos = this.header.bottom + Panel.MARGIN;
 	for (var b in this.buildings.children) {
 		var btn = this.buildings.children[b];
 		btn.resize( this.reqWidth - Panel.MARGIN*2, RGButton.HEIGHT );
@@ -45,9 +53,12 @@ ConstructPanel.prototype.select = function( island, refresh ) {
 
 	for (var b in Buildings.ALL) {
 		var name = Buildings.ALL[b];
+
+		// Checking if the island already has this building
 		if (!this.island.has( name )) {
 
 			var canConstruct = true;
+			// Checking requirements for this building
 			for (var r in Buildings[name].reqs) {
 				if (!this.island.has( Buildings[name].reqs[r] )) {
 					canConstruct = false;
@@ -57,7 +68,11 @@ ConstructPanel.prototype.select = function( island, refresh ) {
 
 			if (canConstruct) {
 				var cap = name[0].toUpperCase() + name.substr( 1 );
-				var btn = new RGButton( game, cap, this.onBuilding, this );
+				var btn = new ProgressBar( game, cap, this.onBuilding, this );
+				if (island.curTask && island.curTask.name == name) {
+					btn.maxValue = Buildings[name].cost;
+					btn.value = island.curTask.progress;
+				}
 				btn.name = name;
 				this.buildings.add( btn );
 			}
@@ -74,7 +89,11 @@ ConstructPanel.prototype.onCancel = function() {
 
 ConstructPanel.prototype.onBuilding = function( btn ) {
 	var building = btn.name;
-	this.island.curTask = building;
-	this.island.taskProgress = 0;
+	if (!this.island.curTask || building != this.island.curTask.name) {
+		this.island.curTask = {
+			name: building,
+			progress: 0
+		}
+	}
 	oceanTribes.switchPanel( IslandMainPanel ).select( this.island );
 }

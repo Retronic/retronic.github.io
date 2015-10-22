@@ -19,9 +19,9 @@ FromTo.prototype.constructor = FromTo;
 
 FromTo.prototype.createChildren = function() {
 	this.fromLabel = game.add.bitmapText( 0, 0, "font12", "From", 12, this );
-	this.fromValue = game.add.bitmapText( 0, 0, "font12", "", 12, this );
+	this.fromValue = game.add.bitmapText( 0, 0, "font12", "???", 12, this );
 	this.toLabel = game.add.bitmapText( 0, 0, "font12", "To", 12, this );
-	this.toValue = game.add.bitmapText( 0, 0, "font12", "", 12, this );
+	this.toValue = game.add.bitmapText( 0, 0, "font12", "???", 12, this );
 }
 
 FromTo.prototype.layout = function() {
@@ -46,7 +46,7 @@ FromTo.prototype.getFrom = function() {
 }
 
 FromTo.prototype.setFrom = function( value ) {
-	this.fromValue.text = value ? value.name : "";
+	this.fromValue.text = value ? value.name : "???";
 	this.fromValue.tint = value && value.tribe ? value.tribe.color : 0xFFFFFF;
 	this._from = value;
 }
@@ -56,7 +56,7 @@ FromTo.prototype.getTo = function() {
 }
 
 FromTo.prototype.setTo = function( value ) {
-	this.toValue.text = value ? value.name : "";
+	this.toValue.text = value ? value.name : "???";
 	this.toValue.tint = value && value.tribe ? value.tribe.color : 0xFFFFFF;
 	this._to = value;
 }

@@ -9,7 +9,7 @@ function Island( x, y, params ) {
 	params = params || {};
 	this.name		= params.name || '';
 	this.size		= Math.round( params.size / 10 ) * 10 || Island.MIN_SIZE;
-	this.population	= params.spopulation || 0;
+	this.population	= params.population || 0;
 	this.fertility	= params.fertility || Island.NORMAL;
 	this.minerals	= params.minerals || Island.NORMAL;
 	this.trade		= params.trade || false;
@@ -20,7 +20,6 @@ function Island( x, y, params ) {
 	this.buildings = null;
 
 	this.curTask = null;
-	this.taskProgress = 0;
 
 	this.onChanged = new Phaser.Signal();
 
@@ -39,6 +38,13 @@ Island.POOR		= -1;
 Island.MAP_SIZE	= 40;
 
 Island.prototype.grow = function() {
+
+	if (this.tribe) {
+		this.tribe.gold += this.getEarnings();
+	}
+	
+	var changed = false;
+
 	if (this.population && this.has( Buildings.GARRISON )) {
 		var grow = this.population * 0.1 * Math.sqrt( 1 - this.population / this.size );
 		if (this.fertility == Island.BARREN) {
@@ -49,17 +55,22 @@ Island.prototype.grow = function() {
 		var newPop = Math.min( this.population + grow, this.size );
 		if (newPop != this.population) {
 			this.population = newPop;
-			this.onChanged.dispatch();
+			changed = true;
 		}
 	}
 
 	if (this.curTask) {
-		this.taskProgress += this.getProduction();
-		if (this.taskProgress >= Buildings[this.curTask].cost) {
-			console.log( this.tribe.name, this.name, ":", this.curTask, "is built" );
-			this.buildings.push( this.curTask );
+		this.curTask.progress += this.getProduction();
+		if (this.curTask.progress >= Buildings[this.curTask.name].cost) {
+			console.log( this.tribe.name, this.name, ":", this.curTask.name, "is built" );
+			this.buildings.push( this.curTask.name );
 			this.curTask = null;
 		}
+		changed = true;
+	}
+
+	if (changed) {
+		this.onChanged.dispatch();
 	}
 }
 
@@ -121,8 +132,10 @@ Island.prototype.colonize = function( tribe ) {
 
 	this.buildings = [];
 
-	this.curTask = Buildings.GARRISON;
-	this.taskProgress = 0;
+	this.curTask = {
+		name		: Buildings.GARRISON,
+		progress	: 0
+	}
 }
 
 Island.prototype.has = function( building ) {
@@ -141,6 +154,11 @@ Island.prototype.getProduction = function() {
 		prod *= 1.5;
 	}
 	return prod;
+}
+
+Island.prototype.getEarnings = function() {
+	var earnings = Math.floor( this.population );
+	return earnings;
 }
 
 Island.randomName = function() {

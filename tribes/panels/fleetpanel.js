@@ -126,8 +126,7 @@ FleetPanel.prototype.select = function( fleet, refresh ) {
 
 FleetPanel.prototype.onFleetChanged = function() {
 	this.select( this.fleet, true );
-	if (!this.fleet.progress.isAlive) {
-		oceanTribes.switchPanel( IslandMainPanel );
-		oceanTribes.map.onClick.dispatch( this.fleet.to );
+	if (!this.fleet.isAlive) {
+		oceanTribes.switchPanel( IslandMainPanel ).select( this.fleet.to );
 	}
 }

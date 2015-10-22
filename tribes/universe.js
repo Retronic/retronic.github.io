@@ -5,7 +5,7 @@ Universe = new (function() {
 		this._id = 0;
 
 		// Current turn number
-		this.turn = 0;
+		this.turn = 1;
 
 		// All islands
 		this.islands = [];
@@ -143,6 +143,10 @@ Universe = new (function() {
 	this.endTurn = function() {
 		var i = this.tribes.indexOf( this.curTribe ) + 1;
 		this.curTribe = this.tribes[i < this.tribes.length ? i : 0];
+
+		if (this.curTribe == this.player) {
+			this.turn++;
+		}
 
 		this.curTribe.process();
 	};

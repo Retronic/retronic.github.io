@@ -16,14 +16,27 @@ OceanTribes.prototype.createChildren = function () {
 		}
 	}, this );
 	this.add( this.map );
+
+	this.tribePanel = new TribePanel( game );
+	this.add( this.tribePanel );
 }
 
 OceanTribes.prototype.layout = function () {
-	if (this.panel) {
-		this.panel.resize( 200, this.reqHeight );
-		this.panel.x = this.reqWidth - this.panel.width;
-	}
+
+	this.tribePanel.resize( 200, 100 );
+	this.tribePanel.x = this.reqWidth - this.tribePanel.width;
+
+	this.layoutPanel();
+
 	this.map.resize( this.reqWidth - 200, this.reqHeight );
+}
+
+OceanTribes.prototype.layoutPanel = function () {
+	if (this.panel) {
+		this.panel.resize( this.tribePanel.width, this.reqHeight - this.tribePanel.height + Panel.LINE );
+		this.panel.x = this.reqWidth - this.panel.width;
+		this.panel.y = this.tribePanel.bottom - Panel.LINE;
+	}
 }
 
 OceanTribes.prototype.switchPanel = function( Panel, params ) {
@@ -34,8 +47,7 @@ OceanTribes.prototype.switchPanel = function( Panel, params ) {
 	this.panel = new Panel( game );
 	this.add( this.panel );
 
-	this.panel.resize( 200, this.reqHeight );
-	this.panel.x = this.reqWidth - this.panel.width;
+	this.layoutPanel();
 
 	return this.panel;
 }
