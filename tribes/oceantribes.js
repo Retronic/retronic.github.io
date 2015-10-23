@@ -19,6 +19,11 @@ OceanTribes.prototype.createChildren = function () {
 
 	this.tribePanel = new TribePanel( game );
 	this.add( this.tribePanel );
+
+	this.gamelog = new GameLog( game );
+	this.gamelog.x = Panel.MARGIN;
+	this.gamelog.y = Panel.MARGIN;
+	this.add( this.gamelog );
 }
 
 OceanTribes.prototype.layout = function () {

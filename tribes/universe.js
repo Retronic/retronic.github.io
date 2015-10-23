@@ -141,6 +141,11 @@ Universe = new (function() {
 	};
 
 	this.endTurn = function() {
+
+		if (this.curTribe == this.player) {
+			gamelog.clear();
+		}
+		
 		var i = this.tribes.indexOf( this.curTribe ) + 1;
 		this.curTribe = this.tribes[i < this.tribes.length ? i : 0];
 

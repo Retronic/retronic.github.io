@@ -62,7 +62,11 @@ Island.prototype.grow = function() {
 	if (this.curTask) {
 		this.curTask.progress += this.getProduction();
 		if (this.curTask.progress >= Buildings[this.curTask.name].cost) {
-			console.log( this.tribe.name, this.name, ":", this.curTask.name, "is built" );
+			if (this.tribe == Universe.player) {
+				gamelog.message( 1, this.name + ' has completed ' + this.curTask.name, function() {
+					oceanTribes.switchPanel( IslandMainPanel ).select( this );
+				}, this );
+			}
 			this.buildings.push( this.curTask.name );
 			this.curTask = null;
 		}
@@ -135,6 +139,12 @@ Island.prototype.colonize = function( tribe ) {
 	this.curTask = {
 		name		: Buildings.GARRISON,
 		progress	: 0
+	}
+
+	if (tribe == Universe.player) {
+		gamelog.message( 2, this.name + ' has been colonized', function() {
+			oceanTribes.switchPanel( IslandMainPanel ).select( this );
+		}, this );
 	}
 }
 

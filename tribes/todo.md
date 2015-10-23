@@ -10,5 +10,6 @@
 	* update() in index.html
 	* After a fleet arrives settlers should be "dropped" separately to deplay an assault, a colony foundation etc.
 * UI
-	* Gamelog with messages like "the colony has been founded", "settlers have arrived" etc.
 	* When an island is selected show all player's fleet moving to this island
+* Bugfixing
+	* Clicking an item in the gamelog sometimes highlights a wrong object (island)
