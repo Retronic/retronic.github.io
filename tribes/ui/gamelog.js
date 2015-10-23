@@ -21,7 +21,7 @@ GameLog.prototype.message = function( icon, text, callback, callbackContext ) {
 }
 
 GameLog.prototype.clear = function() {
-	this.removeAll();
+	this.removeAll( true );
 	this.pos = 0;
 }
 
@@ -34,6 +34,8 @@ GameLog.Message = function( game, icon, text, callback, callbackContext ) {
 
 	this.tf.text = text;
 	this.icon.frame = icon;
+
+	console.log( text, this.callbackContext );
 }
 
 GameLog.Message.prototype = Object.create( View.prototype );

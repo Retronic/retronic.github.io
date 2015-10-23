@@ -53,50 +53,28 @@ MigratePanel.prototype.layout = function() {
 }
 
 MigratePanel.prototype.onCancel = function() {
-	oceanTribes.switchPanel( IslandMainPanel );
-	oceanTribes.map.onClick.dispatch( this.originSet ? this.fromTo.from : this.fromTo.to );
+	oceanTribes.switchPanel( IslandMainPanel ).select( this.fromTo.from );
 }
 
 MigratePanel.prototype.onOK = function() {
 	var fleet = Universe.curTribe.launch( this.fromTo.from.tribe, this.fromTo.from, this.fromTo.to, this.size.value );
 	
-	oceanTribes.switchPanel( FleetPanel );
-	oceanTribes.map.onClick.dispatch( fleet );
+	oceanTribes.switchPanel( FleetPanel ).select( fleet );
 }
 
 MigratePanel.prototype.mapClicked = function( object ) {
 	if (object instanceof Island) {
-		if (this.originSet) {
-			this.migrateTo( object );
-		} else {
-			if (object.tribe == Universe.player && object.canLaunch()) {
-				this.migrateFrom( object );
-			}
-		}
+		this.fromTo.to = object;
+		this.updateLink();
 	}
 }
 
-MigratePanel.prototype.migrateFrom = function( island ) {
+MigratePanel.prototype.select = function( island ) {
 
+	IslandPanel.prototype.select.call( this, island );
 	this.fromTo.from = island;
 
-	if (this.originSet == null) {
-		this.select( island );
-		this.originSet = true;
-		this.size.setRange( 1, Math.floor(island.population / 2), Math.floor(island.population / 2) );
-	}
-
-	this.updateLink();
-}
-
-MigratePanel.prototype.migrateTo = function( island ) {
-	this.fromTo.to = island;
-
-	if (this.originSet == null) {
-		this.select( island );
-		this.originSet = false;
-		this.size.setRange( 1, island.tribe ? island.size : 1, island.size );
-	}
+	this.size.setRange( 1, Math.floor(island.population / 2), Math.floor(island.population / 2) );
 
 	this.updateLink();
 }
@@ -107,10 +85,9 @@ MigratePanel.prototype.updateLink = function() {
 	var to = this.fromTo.to;
 
 	this.ok.visible = 
-	this.time.visible = 
-		from && to;
+	this.time.visible = false;
 
-	if (this.ok.visible) {
+	if (from && to) {
 		this.time.text = "Time to sail: " + Universe.time2sail( from.tribe, from, to ) + " turns";
 		if (to.tribe == null) {
 			this.ok.label = "Colonize";
@@ -120,7 +97,16 @@ MigratePanel.prototype.updateLink = function() {
 			this.ok.label = "Invade";
 		}
 
-		this.size.setRange( 1, Math.min( Math.floor(from.population / 2),  to.tribe ? to.size : 1 ), this.size.value );
+		var limitFrom = Math.floor(from.population / 2);
+		var limitTo = to.tribe ?
+			(to.has( Buildings.GARRISON ) ? Math.round( to.size - to.population ) : 0) : 1;
+		var limit = Math.min( limitFrom, limitTo );
+
+		this.size.setRange( 1, limit, limit );
+		if (limit >= 1) {
+			this.ok.visible = 
+			this.time.visible = true;
+		}
 	}
 
 	oceanTribes.map.link( from, to );

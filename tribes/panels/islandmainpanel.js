@@ -47,9 +47,11 @@ IslandMainPanel.prototype.select = function( island, refresh ) {
 
 	IslandPanel.prototype.select.call( this, island, refresh );
 
-	this.migrate.visible = (island.tribe != Universe.player) || island.canLaunch();
-	this.construct.visible = this.taskLabel.visible = (island.tribe == Universe.player);
-	if (this.construct.visible) {
+	if (island.tribe == Universe.player) {
+		this.construct.visible = 
+		this.taskLabel.visible = true;
+		this.migrate.visible = island.canLaunch();
+
 		if (island.curTask) {
 			var name = island.curTask.name;
 			name = name[0].toUpperCase() + name.substr( 1 );
@@ -60,24 +62,15 @@ IslandMainPanel.prototype.select = function( island, refresh ) {
 			this.construct.label = "None";
 			this.construct.value = NaN;
 		}
-	}
-
-	if (island.tribe == Universe.player) {
-		this.migrate.label = "Migrate";
-	} else if (island.tribe == null) {
-		this.migrate.label = "Colonize";
 	} else {
-		this.migrate.label = "Invade";
+		this.construct.visible = 
+		this.taskLabel.visible = 
+		this.migrate.visible = false;
 	}
 }
 
 IslandMainPanel.prototype.onMigrate = function() {
-	var panel =oceanTribes.switchPanel( MigratePanel );
-	if (this.island.tribe == Universe.player) {
-		panel.migrateFrom( this.island );
-	} else {
-		panel.migrateTo( this.island );
-	}
+	oceanTribes.switchPanel( MigratePanel ).select( this.island );
 }
 
 IslandMainPanel.prototype.onTask = function() {

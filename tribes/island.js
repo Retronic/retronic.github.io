@@ -144,12 +144,13 @@ Island.prototype.colonize = function( tribe ) {
 	if (tribe == Universe.player) {
 		gamelog.message( 2, this.name + ' has been colonized', function() {
 			oceanTribes.switchPanel( IslandMainPanel ).select( this );
+			console.log( 'click', this );
 		}, this );
 	}
 }
 
 Island.prototype.has = function( building ) {
-	return this.buildings.indexOf( building ) != -1;
+	return this.buildings && this.buildings.indexOf( building ) != -1;
 }
 
 Island.prototype.canLaunch = function() {
