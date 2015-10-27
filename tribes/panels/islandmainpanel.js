@@ -19,7 +19,7 @@ IslandMainPanel.prototype.createChildren = function() {
 	this.construct = new ProgressBar( game, "Task", this.onTask, this );
 	this.addChild( this.construct );
 
-	this.migrate = new RGButton( game, "Migrate", this.onMigrate, this );
+	this.migrate = new RGButton( game, "Transfer", this.onMigrate, this );
 	this.addChild( this.migrate );
 }
 

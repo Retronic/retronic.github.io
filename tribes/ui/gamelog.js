@@ -34,8 +34,6 @@ GameLog.Message = function( game, icon, text, callback, callbackContext ) {
 
 	this.tf.text = text;
 	this.icon.frame = icon;
-
-	console.log( text, this.callbackContext );
 }
 
 GameLog.Message.prototype = Object.create( View.prototype );
@@ -55,7 +53,6 @@ GameLog.Message.prototype.createChildren = function() {
 GameLog.Message.prototype.layout = function() {
 
 	this.reqWidth = this.icon.width + Panel.LINE + this.tf.textWidth;
-	console.log( this.icon.width, Panel.LINE, this.tf.textWidth, "=" + this.reqWidth );
 
 	this.button.width = this.reqWidth;
 	this.button.height = this.reqHeight;

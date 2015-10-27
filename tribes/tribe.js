@@ -51,8 +51,8 @@ Tribe.prototype.advance = function() {
 	}
 }
 
-Tribe.prototype.launch = function( tribe, from, to, size ) {
-	var fleet = new Fleet( this, from, to, size, Universe.time2sail( tribe, from, to ) );
+Tribe.prototype.launch = function( tribe, from, to, size, type ) {
+	var fleet = new Fleet( this, from, to, size, type, Universe.time2sail( tribe, from, to ) );
 	this.fleets[fleet.id] = fleet;
 	from.population -= size;
 	from.launched = true;
@@ -81,7 +81,7 @@ Tribe.prototype.think = function() {
 	if (ids1.length && ids2.length) {
 		var src = this.islands[ids1[Math.floor(Math.random() * ids1.length)]];
 		var dst = this.knownIslands[ids2[Math.floor(Math.random() * ids2.length)]];
-		this.launch( this, src, dst, 1 + Math.floor(Math.random() * src.population / 2) );
+		this.launch( this, src, dst, 1 + Math.floor(Math.random() * src.population / 2), Fleet.SETTLER );
 	}
 
 	Universe.endTurn();
@@ -92,7 +92,7 @@ Tribe.prototype.addIsland = function( island, population ) {
 	this.islands[island.id] = island;
 	if (!this.home) {
 		this.home = island;
-		this.home.buildings = [Buildings.GARRISON,Buildings.SHIPYARD];
+		this.home.buildings = [Buildings.OUTPOST, Buildings.SHIPYARD];
 	}
 
 	island.tribe = this;
@@ -119,7 +119,6 @@ Tribe.prototype.updateIslandsVisibility = function() {
 			var isl2 = Universe.islands[j];
 			if (Universe.distance2( isl1, isl2 ) < r2) {
 				this.knownIslands[j] = isl2;
-				console.log( isl2.name );
 			}
 		}
 	}

@@ -111,9 +111,7 @@ Universe = new (function() {
 			}
 		}
 
-		console.log( homeIslands, par.tribes );
 		if (homeIslands.length < par.tribes.length) {
-			console.log( "try again" )
 			return false;
 		}
 
@@ -124,12 +122,29 @@ Universe = new (function() {
 
 		// For each tribe we select one vacant island as a home island
 		for (var i in this.tribes) {
-			var tribe = par.tribes[i];
-			do {
-				var island = rnd.pick( homeIslands );
-			} while (island.tribe != null);
 
+			// If we are out of "good" islands, recreate the whole universe
+			if (!homeIslands.length) {
+				return false;
+			}
+
+			// Select a random "good" islands, make it home for one of the tribes,
+			// remove it from the list of "good" islands
+			var tribe = par.tribes[i];
+			var index = rnd.between( 0, homeIslands.length-1 );
+			var island = homeIslands[index];
 			tribe.addIsland( island, island.size / 2 );
+			homeIslands.splice( index, 1 );
+
+			// If any of the left "good" islands are too close to
+			// the recently selected one, remove them from the list
+			for (j=homeIslands.length-1; j >= 0; j--) {
+				var isl = homeIslands[j];
+				if (this.distance2( island, isl ) < 81 * Universe.MIN_DISTANCE2) {
+					console.log( this.time2sail( tribe, island, isl ), 'remove' );
+					homeIslands.splice( j, 1 );
+				}
+			}
 		}
 
 		return true;
@@ -159,7 +174,7 @@ Universe = new (function() {
 	this.time2sail = function( tribe, from, to ) {
 		var dx = to.x - from.x;
 		var dy = to.y - from.y;
-		return Math.ceil( Math.sqrt( (dx * dx + dy * dy) / Universe.MIN_DISTANCE2 ) );
+		return Math.ceil( Math.sqrt( this.distance2( from, to ) / Universe.MIN_DISTANCE2 ) );
 	};
 
 	this.distance = function( a, b ) {

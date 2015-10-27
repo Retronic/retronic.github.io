@@ -1,6 +1,6 @@
 var Buildings = {};
 
-Buildings.GARRISON	= "garrison";
+Buildings.OUTPOST	= "outpost";
 Buildings.SHIPYARD	= "shipyard";
 Buildings.BURIAL	= "burial grounds";
 Buildings.SHRINE	= "shrine";
@@ -9,21 +9,21 @@ Buildings.MARKET	= "marketplace";
 
 // Forge Workshop Longhouse Fort Trading post
 
-Buildings.ALL = [Buildings.GARRISON, Buildings.SHIPYARD, Buildings.BURIAL, Buildings.SHRINE, Buildings.DOCKS, Buildings.MARKET];
+Buildings.ALL = [Buildings.OUTPOST, Buildings.SHIPYARD, Buildings.BURIAL, Buildings.SHRINE, Buildings.DOCKS, Buildings.MARKET];
 
-Buildings[Buildings.GARRISON] = {
-	cost	: 5,
+Buildings[Buildings.OUTPOST] = {
+	cost	: 200,
 	reqs	: []
 };
 
 Buildings[Buildings.SHIPYARD] = {
-	cost	: 10,
-	reqs	: [Buildings.GARRISON]
+	cost	: 300,
+	reqs	: [Buildings.OUTPOST]
 };
 
 Buildings[Buildings.BURIAL] = {
 	cost	: 10,
-	reqs	: [Buildings.GARRISON]
+	reqs	: [Buildings.OUTPOST]
 };
 
 Buildings[Buildings.SHRINE] = {
@@ -38,5 +38,5 @@ Buildings[Buildings.DOCKS] = {
 
 Buildings[Buildings.MARKET] = {
 	cost	: 10,
-	reqs	: [Buildings.GARRISON]
+	reqs	: [Buildings.OUTPOST]
 };

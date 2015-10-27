@@ -17,7 +17,7 @@ function Island( x, y, params ) {
 	this.cliffs		= params.cliffs || false;
 
 	this.tribe = null;
-	this.buildings = null;
+	this.buildings = [];
 
 	this.curTask = null;
 
@@ -45,8 +45,8 @@ Island.prototype.grow = function() {
 	
 	var changed = false;
 
-	if (this.population && this.has( Buildings.GARRISON )) {
-		var grow = this.population * 0.1 * Math.sqrt( 1 - this.population / this.size );
+	if (this.population && this.has( Buildings.OUTPOST )) {
+		var grow = this.population * 0.02 * Math.sqrt( 1 - this.population / this.size );
 		if (this.fertility == Island.BARREN) {
 			grow *= 0.5;
 		} else if (this.fertility == Island.FERTILE) {
@@ -131,13 +131,12 @@ Island.prototype.buildMap = function() {
 	} while (square < limit);
 }
 
-Island.prototype.colonize = function( tribe ) {
-	tribe.addIsland( this, 1 );
+Island.prototype.colonize = function( tribe, size ) {
 
-	this.buildings = [];
+	tribe.addIsland( this, size );
 
 	this.curTask = {
-		name		: Buildings.GARRISON,
+		name		: Buildings.OUTPOST,
 		progress	: 0
 	}
 

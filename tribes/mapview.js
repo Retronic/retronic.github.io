@@ -30,11 +30,13 @@ MapView.prototype.constructor = MapView;
 
 MapView.prototype.createChildren = function() {
 
-	this.ocean = game.add.tileSprite( 0, 0, 100, 100, 'ocean', null, this );
-	this.ocean.autoScroll( 4, 4 );
-	this.ocean.visible = false;
 
 	this.objects = game.add.group( this );
+
+	this.ocean = game.add.tileSprite( 0, 0, 100, 100, 'ocean', null, this.objects );
+	this.ocean.autoScroll( 8, 2 );
+
+	this.ocean.mask = game.add.graphics( 0, 0, this.objects );
 
 	this.graphics = game.add.graphics( 0, 0, this.objects );
 
@@ -55,10 +57,19 @@ MapView.prototype.createChildren = function() {
 
 MapView.prototype.layout = function() {
 
-	this.ocean.width = this.reqWidth;
-	this.ocean.height = this.reqHeight;
+	
 
 	this.zoom = Math.min( this.reqWidth, this.reqHeight ) / Universe.SIZE;
+
+	this.ocean.x = -Universe.SIZE * this.zoom;
+	this.ocean.y = -Universe.SIZE * this.zoom;
+	this.ocean.width = Universe.SIZE * 3 * this.zoom;
+	this.ocean.height = Universe.SIZE * 3 * this.zoom;
+
+	var d = 2 * Universe.player.getViewDistance() * this.zoom;
+	this.ocean.mask.clear();
+	this.ocean.mask.beginFill( 0xffffff );
+
 	var ox = (this.reqWidth - Universe.SIZE * this.zoom) / 2;
 	var oy = (this.reqHeight - Universe.SIZE * this.zoom) / 2;
 	for (var i in this.islands) {
@@ -66,6 +77,10 @@ MapView.prototype.layout = function() {
 		island.x = island.data.x * this.zoom;
 		island.y = island.data.y * this.zoom;
 		island.zoom = this.zoom;
+
+		if (island.data.tribe == Universe.player) {
+			this.ocean.mask.drawCircle( island.x, island.y, d );
+		}
 	}
 
 	if (this.tween) {
@@ -93,8 +108,7 @@ MapView.prototype.select = function( object ) {
 		var island = this.islands[object.id];
 		this.graphics.lineStyle( 4, 0xFFFFFF, 0.3 );
 		this.graphics.drawCircle( island.x, island.y, Island.MAP_SIZE * 2 * this.zoom );
-	} else if (object instanceof Fleet && object.tribe == Universe.player) {	
-		console.log( 'draw line' );	
+	} else if (object instanceof Fleet && object.tribe == Universe.player) {
 		this.line.draw( object.view, object.to.view );
 	}
 
@@ -135,6 +149,16 @@ MapView.prototype.addFleet = function( fleet ) {
 }
 
 MapView.prototype.updateFieldOfView = function( tribe ) {
+
+	var d = 2 * Universe.player.getViewDistance() * this.zoom;
+
+	this.ocean.mask.clear();
+	this.ocean.mask.beginFill( 0xffffff );
+	for (var i in tribe.islands) {
+		var island = tribe.islands[i].view;
+		this.ocean.mask.drawCircle( island.x, island.y, d );
+	}
+
 	for (i in tribe.knownIslands) {
 		var view = tribe.knownIslands[i].view;
 		if (!view.visible) {

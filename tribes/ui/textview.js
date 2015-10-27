@@ -35,6 +35,7 @@ TextView.prototype.getHeight = function( value ) {
 
 TextView.prototype.setText = function( value ) {
 	this.tf.text = value;
+	this.layout();
 }
 
 TextView.prototype.setColor = function( value ) {
