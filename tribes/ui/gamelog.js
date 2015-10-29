@@ -6,6 +6,8 @@ function GameLog( game ) {
 	this.pos = 0;
 
 	gamelog = this;
+
+	this.sound = game.add.audio( 'click' );
 }
 
 GameLog.prototype = Object.create( View.prototype );
@@ -18,6 +20,8 @@ GameLog.prototype.message = function( icon, text, callback, callbackContext ) {
 	this.add( message );
 
 	this.pos = message.bottom;
+
+	this.sound.play();
 }
 
 GameLog.prototype.clear = function() {

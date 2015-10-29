@@ -8,6 +8,8 @@
 	<script type="text/javascript" src="ui/view.js"></script>
 	<script type="text/javascript" src="ui/textview.js"></script>
 	<script type="text/javascript" src="panels/panel.js"></script>
+	<script type="text/javascript" src="ui/popup.js"></script>
+	<script type="text/javascript" src="popups/assaultpopup.js"></script>
 	<script type="text/javascript" src="oceantribes.js"></script>
 	<script type="text/javascript" src="universe.js"></script>
 	<script type="text/javascript" src="buildings.js"></script>
@@ -49,6 +51,7 @@ function preload() {
 	game.load.image( 'ocean', 'assets/ocean.png' );
 	game.load.spritesheet( 'flag', 'assets/flags.png', 16, 16 );
 	game.load.spritesheet( 'fleet', 'assets/fleet.png', 24, 24 );
+	game.load.spritesheet( 'warrior', 'assets/warrior.png', 64, 64 );
 	game.load.spritesheet( 'log', 'assets/log.png', 30, 30 );
 	game.load.image( 'dashed', 'assets/dashed.png' );
 
@@ -56,6 +59,12 @@ function preload() {
 	game.load.bitmapFont( 'font8', 'assets/font8.png', 'assets/font8.xml' );
 	game.load.bitmapFont( 'font12', 'assets/font12.png', 'assets/font12.xml' );
 	game.load.bitmapFont( 'font15', 'assets/font15.png', 'assets/font15.xml' );
+
+	game.load.audio( 'hit', 'assets/snd_hit.mp3' );
+	game.load.audio( 'miss', 'assets/snd_miss.mp3' );
+	game.load.audio( 'launch', 'assets/snd_launch.mp3' );
+	game.load.audio( 'click', 'assets/snd_click.mp3' );
+	game.load.audio( 'music', 'assets/ingame.mp3' );
 }
 
 function create() {
@@ -71,22 +80,28 @@ function create() {
 
 	oceanTribes.switchPanel( IslandMainPanel ).select( Universe.player.home );
 	oceanTribes.map.updateFieldOfView( Universe.player );
+
+	game.add.audio( 'music' ).loopFull();
 }
 
-var lastTribe = null;
 function update() {
 
-	if (Universe.curTribe != lastTribe) {
+	switch (Universe.curTribe.state) {
+	case Tribe.State.NOT_GROWN:
+		Universe.curTribe.grow();
 		oceanTribes.tribePanel.select( Universe.curTribe );
-		lastTribe = Universe.curTribe;
-
 		if (Universe.curTribe == Universe.player) {
 			oceanTribes.map.updateFieldOfView( Universe.player );
 		}
-	}
-
-	if (Universe.curTribe != Universe.player) {
-		Universe.curTribe.think();
+		break;
+	case Tribe.State.NOT_PROCESSED:
+		Universe.curTribe.process();
+		break;
+	case Tribe.State.PROCESSED:
+		Universe.endTurn();
+		break;
+	case Tribe.State.PROCESSING:
+		break;
 	}
 }
 

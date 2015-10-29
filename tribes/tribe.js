@@ -23,6 +23,9 @@ function Tribe( params ) {
 	this.gold = 1000;
 	this.tech = 1;
 	this.progress = 0;
+
+	this.state = Tribe.State.NOT_PROCESSED;
+	this.assaulting = [];
 }
 
 Tribe.NORSE	= function() { return new Tribe( {name: 'Norse', flag: 0, color: 0xff4040} ) };
@@ -31,10 +34,12 @@ Tribe.CELTS	= function() { return new Tribe( {name: 'Celts', flag: 2, color: 0x4
 
 Tribe.ALL	= function() { return [Tribe.NORSE(), Tribe.SLAVS(), Tribe.CELTS()] };
 
-Tribe.prototype.process = function() {
-	this.grow();
-	this.advance();
-}
+Tribe.State = {
+	NOT_GROWN		: "not grown",
+	NOT_PROCESSED	: "not processed",
+	PROCESSED		: "processed",
+	PROCESSING		: "processing"
+};
 
 Tribe.prototype.grow = function() {
 	for (var i in this.islands) {
@@ -42,12 +47,39 @@ Tribe.prototype.grow = function() {
 		island.launched = false;
 		island.grow();
 	}
-}
 
-Tribe.prototype.advance = function() {
+	this.assaulting = [];
 	for (var i in this.fleets) {
 		var fleet = this.fleets[i];
 		fleet.advance();
+		if (!fleet.isAlive) {
+			delete this.fleets[i];
+		}
+	}
+
+	this.state = Tribe.State.NOT_PROCESSED;
+}
+
+Tribe.prototype.process = function() {
+
+	var assault = this.assaulting.shift();
+	if (assault) {
+		if (this == Universe.player || assault.to.tribe == Universe.player) {
+			var popup = PopUp.show( new AssaultPopUp( game, assault ) );
+		} else {
+			AssaultPopUp.resolve( assault );
+			assault = null;
+		}
+	}
+
+	if (this == Universe.player) {
+		this.state = Tribe.State.PROCESSING;
+	} else {
+		if (assault) {
+			this.state = Tribe.State.PROCESSING;
+		} else {
+			this.think();
+		}
 	}
 }
 
@@ -73,7 +105,7 @@ Tribe.prototype.think = function() {
 
 	var ids2 = [];
 	for (var i in this.knownIslands) {
-		if (this.knownIslands[i].tribe == null) {
+		if (this.knownIslands[i].tribe != this) {
 			ids2.push( i );
 		}
 	}
@@ -84,10 +116,14 @@ Tribe.prototype.think = function() {
 		this.launch( this, src, dst, 1 + Math.floor(Math.random() * src.population / 2), Fleet.SETTLER );
 	}
 
-	Universe.endTurn();
+	this.state = Tribe.State.PROCESSED;
 }
 
 Tribe.prototype.addIsland = function( island, population ) {
+
+	if (island.tribe) {
+		island.tribe.removeIsland( island );
+	}
 
 	this.islands[island.id] = island;
 	if (!this.home) {
@@ -97,6 +133,29 @@ Tribe.prototype.addIsland = function( island, population ) {
 
 	island.tribe = this;
 	island.population = population;
+	island.curTask = null;
+
+	island.onChanged.dispatch();
+
+	this.updateIslandsVisibility();
+}
+
+Tribe.prototype.removeIsland = function( island ) {
+	delete this.islands[island.id];
+
+	if (this.home == island) {
+		var ids = [];
+		for (var i in this.islands) {
+			ids.push( i );
+		}
+		if (ids.length) {
+			this.home = this.islands[ids[Math.floor(Math.random() * ids.length)]];
+			this.home.onChanged.dispatch();
+		}
+	}
+
+	island.tribe = null;
+	island.population = 0;
 
 	island.onChanged.dispatch();
 

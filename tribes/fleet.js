@@ -34,7 +34,11 @@ Fleet.prototype.advance = function() {
 	this.y = this.from.y + (this.to.y - this.from.y) * p;
 
 	if (this.progress >= this.duration) {
-		this.arrive();
+		if (this.to.tribe == null || this.to.tribe == this.tribe) {
+			this.arrive();
+		} else {
+			this.tribe.assaulting.push( this );
+		}
 	}
 	this.onChanged.dispatch();
 }
@@ -51,7 +55,6 @@ Fleet.prototype.arrive = function() {
 
 		this.to.population = 
 			Math.min( this.to.population + this.size, this.to.size );
-		this.to.onChanged.dispatch();
 
 		if (this.tribe == Universe.player) {
 			gamelog.message( 3, this.size + ' settlers from ' + this.from.name + ' has arrived to ' + this.to.name, function() {
@@ -60,6 +63,8 @@ Fleet.prototype.arrive = function() {
 		}
 
 	} else {
+
+		// Processed separately
 
 	}
 }

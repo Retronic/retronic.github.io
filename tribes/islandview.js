@@ -84,5 +84,15 @@ IslandView.prototype.updateSize = function() {
 }
 
 IslandView.prototype.refresh = function() {
-	this.name.tint = this.data.tribe ? this.data.tribe.color : 0xFFFFFF;
+
+	var island = this.data;
+
+	this.name.tint = island.tribe ? island.tribe.color : 0xFFFFFF;
+
+	if (island.tribe && island.tribe.home == island) {
+		this.flag.visible = true;
+		this.flag.frame = island.tribe.flag;
+	} else {
+		this.flag.visible = false;
+	}
 }

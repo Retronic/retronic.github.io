@@ -140,10 +140,10 @@ Universe = new (function() {
 			// the recently selected one, remove them from the list
 			for (j=homeIslands.length-1; j >= 0; j--) {
 				var isl = homeIslands[j];
-				if (this.distance2( island, isl ) < 81 * Universe.MIN_DISTANCE2) {
+			/*	if (this.distance2( island, isl ) < 81 * Universe.MIN_DISTANCE2) {
 					console.log( this.time2sail( tribe, island, isl ), 'remove' );
 					homeIslands.splice( j, 1 );
-				}
+				}*/
 			}
 		}
 
@@ -157,6 +157,8 @@ Universe = new (function() {
 
 	this.endTurn = function() {
 
+		Universe.curTribe.state = Tribe.State.NOT_GROWN;
+
 		if (this.curTribe == this.player) {
 			gamelog.clear();
 		}
@@ -167,8 +169,6 @@ Universe = new (function() {
 		if (this.curTribe == this.player) {
 			this.turn++;
 		}
-
-		this.curTribe.process();
 	};
 
 	this.time2sail = function( tribe, from, to ) {

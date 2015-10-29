@@ -34,6 +34,8 @@ OceanTribes.prototype.layout = function () {
 	this.layoutPanel();
 
 	this.map.resize( this.reqWidth - 200, this.reqHeight );
+
+	PopUp.layout();
 }
 
 OceanTribes.prototype.layoutPanel = function () {

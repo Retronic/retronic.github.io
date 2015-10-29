@@ -78,6 +78,9 @@ MigratePanel.prototype.onCancel = function() {
 }
 
 MigratePanel.prototype.onOK = function() {
+
+	game.add.audio( 'launch' ).play();
+
 	var fleet = Universe.curTribe.launch( this.island.tribe, this.island, this.to, this.size.value, this.fleetType );
 	this.island.tribe.gold -= this.price;
 	
@@ -170,7 +173,7 @@ MigratePanel.prototype.updateSize = function() {
 	if (this.fleetType) {
 
 		var limitFrom = Math.floor( this.island.population / 2);
-		var limitTo = Math.round( this.to.size - this.to.population );
+		var limitTo = this.fleetType == Fleet.NAVAL ? this.to.size : Math.round( this.to.size - this.to.population );
 		var limit = Math.min( limitFrom, limitTo );
 
 		this.size.visible = true;
