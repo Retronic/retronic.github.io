@@ -81,7 +81,10 @@ function create() {
 	oceanTribes.switchPanel( IslandMainPanel ).select( Universe.player.home );
 	oceanTribes.map.updateFieldOfView( Universe.player );
 
-	game.add.audio( 'music' ).loopFull();
+	var music = game.add.audio( 'music' );
+	music.onDecoded.add( function() {
+		music.loopFull();
+	}, this );
 }
 
 function update() {
