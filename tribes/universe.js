@@ -111,6 +111,30 @@ Universe = new (function() {
 			}
 		}
 
+		// Each home island should have at least 2 islands
+		// within 3 turns from it
+		var h = homeIslands.concat();
+		homeIslands = [];
+		for (var i in h) {
+			var island = h[i];
+			var count = 0;
+			for (var j in this.islands) {
+				var isl = this.islands[j];
+				if (isl == island) {
+					continue;
+				}
+				if (this.distance2( island, isl ) < 9 * Universe.MIN_DISTANCE2) {
+					count++;
+					if (count >= 2) {
+						break;
+					}
+				}
+			}
+			if (count >= 2) {
+				homeIslands.push( island );
+			}
+		}
+
 		if (homeIslands.length < par.tribes.length) {
 			return false;
 		}

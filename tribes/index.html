@@ -49,6 +49,7 @@ function preload() {
 	game.stage.backgroundColor = '#003344';
 
 	game.load.image( 'ocean', 'assets/ocean.png' );
+	game.load.image( 'beach', 'assets/beach.png' );
 	game.load.spritesheet( 'flag', 'assets/flags.png', 16, 16 );
 	game.load.spritesheet( 'fleet', 'assets/fleet.png', 24, 24 );
 	game.load.spritesheet( 'warrior', 'assets/warrior.png', 64, 64 );
@@ -64,7 +65,8 @@ function preload() {
 	game.load.audio( 'miss', 'assets/snd_miss.mp3' );
 	game.load.audio( 'launch', 'assets/snd_launch.mp3' );
 	game.load.audio( 'click', 'assets/snd_click.mp3' );
-	game.load.audio( 'music', 'assets/ingame.mp3' );
+	game.load.audio( 'log', 'assets/snd_bell.mp3' );
+	game.load.audio( 'music', 'assets/music.mp3' );
 }
 
 function create() {

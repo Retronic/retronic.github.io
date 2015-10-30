@@ -7,7 +7,7 @@ function GameLog( game ) {
 
 	gamelog = this;
 
-	this.sound = game.add.audio( 'click' );
+	this.sound = game.add.audio( 'log' );
 }
 
 GameLog.prototype = Object.create( View.prototype );

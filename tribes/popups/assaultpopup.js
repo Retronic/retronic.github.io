@@ -3,52 +3,60 @@ function AssaultPopUp( game, fleet ) {
 
 	this.fleet = fleet;
 
-	this.attackers = [];
 	for (var i=0; i < fleet.size; i++) {
-		var warrior = game.add.image( 0, 0, 'warrior', fleet.tribe.flag, this );
+		var warrior = game.add.image( 0, 0, 'warrior', fleet.tribe.flag, this.attackers );
 		warrior.smoothed = false;
-		this.attackers.push( warrior );
 	}
 
-	this.defenders = [];
 	for (var i=0; i < fleet.to.population; i++) {
-		var warrior = game.add.image( 0, 0, 'warrior', fleet.to.tribe.flag, this );
+		var warrior = game.add.image( 0, 0, 'warrior', fleet.to.tribe.flag, this.defenders );
 		warrior.scale.x = -1;
-		this.defenders.push( warrior );
 	}
 
 	game.time.events.add( Phaser.Timer.QUARTER, this.killOne, this );
 
-	this.resize( 800, 200 );
+	this.resize( this.beach.width + Panel.LINE*2, this.beach.height + Panel.LINE*2 );
 }
 
 AssaultPopUp.prototype = Object.create( PopUp.prototype );
 AssaultPopUp.prototype.constructor = AssaultPopUp;
 
+AssaultPopUp.prototype.createChildren = function() {
+
+	PopUp.prototype.createChildren.call( this );
+
+	this.beach = game.add.image( Panel.LINE, Panel.LINE, 'beach', null, this );
+	this.beach.smoothed = false;
+
+	this.attackers = game.add.group( this );
+	this.defenders = game.add.group( this );
+}
+
 AssaultPopUp.prototype.layout = function() {
 
 	PopUp.prototype.layout.call( this );
 
-	var n1 = this.attackers.length + this.defenders.length - 1;
-	var gap = Math.floor( (this.reqWidth - 64/*sprite size*/ - Panel.MARGIN*2) / n1 );
-	if (gap > 16) {
-		gap = 16;
+	var n1 = this.attackers.length + this.defenders.length - 2;
+	this.gap = Math.floor( (this.reqWidth - 64*2/*sprite size*/ - Panel.MARGIN*2) / n1 );
+	if (this.gap > 16) {
+		this.gap = 16;
 	}
-	var margin = (this.reqWidth - gap * n1 - 64/*sprite size*/) / 2;
+	var margin = (this.reqWidth - this.gap * n1 - 64*2/*sprite size*/) / 2;
 
 	for (var i=0; i < this.attackers.length; i++) {
-		var warrior = this.attackers[i];
-		warrior.x = margin + gap * i;
-		warrior.y = Panel.MARGIN + Math.random() * (this.reqHeight - warrior.height - Panel.MARGIN*2);
+		var warrior = this.attackers.children[i];
+		warrior.x = margin + this.gap * i;
+		warrior.y = this.reqHeight - Panel.LINE - 64 - Math.random() * 80;
 	}
 
 	for (var i=0; i < this.defenders.length; i++) {
-		var warrior = this.defenders[i];
-		warrior.x = this.reqWidth - margin - gap * i;
-		warrior.y = Panel.MARGIN + Math.random() * (this.reqHeight - warrior.height - Panel.MARGIN*2);
+		var warrior = this.defenders.children[i];
+		warrior.x = this.reqWidth - margin - this.gap * i;
+		warrior.y = this.reqHeight - Panel.LINE - 64 - Math.random() * 80;
 	}
 
-	this.sort( 'y', Phaser.Group.SORT_ASCENDING );
+	this.attackers.sort( 'y', Phaser.Group.SORT_ASCENDING );
+	this.defenders.sort( 'y', Phaser.Group.SORT_ASCENDING );
 }
 
 AssaultPopUp.prototype.killOne = function() {
@@ -56,17 +64,21 @@ AssaultPopUp.prototype.killOne = function() {
 	// Choosing a group which has lost a warrior this time
 	var group = AssaultPopUp.attack( this.fleet ) ? this.defenders : this.attackers;
 
-	// Removing a sprite from the stage and from its group
-	var i = group.length - 1;
-	var warrior = group[i];
+	// Removing a sprite from its group
+	var warrior = null;
+	group.forEachAlive( function( w ) { 
+		if (!warrior || w.x * w.scale.x > warrior.x * warrior.scale.x) {
+			warrior = w;
+		}
+	} );
 	warrior.destroy();
-	group.splice( i, 1 );
 
 	game.add.audio( group == this.defenders ? 'hit' : 'miss' ).play();
 
 	if (group.length) {
 		// If the group is not empty, then scheduling the next "duel"
-		game.time.events.add( Phaser.Timer.QUARTER, this.killOne, this );
+		this.tween = game.add.tween( group ).to( {x: group == this.attackers ? group.x + this.gap : group.x - this.gap}, Phaser.Timer.QUARTER, Phaser.Easing.Quadratic.In, true );
+		this.tween.onComplete.add( this.killOne, this );
 	} else {
 		// Short delay before closing the window
 		game.time.events.add( Phaser.Timer.SECOND, this.assaultOver, this, group == this.defenders );

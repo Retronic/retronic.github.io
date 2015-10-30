@@ -49,6 +49,7 @@ RGButton.prototype.layout = function() {
 }
 
 RGButton.prototype.onButtonClick = function() {
+	game.add.audio( 'click' ).play();
 	this.onClick.dispatch( this );
 }
 
