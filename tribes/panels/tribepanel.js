@@ -14,6 +14,9 @@ TribePanel.prototype.createChildren = function() {
 
 	this.info = new TextView( game, "", "font12", 12 );
 	this.add( this.info );
+
+	this.tech = new ProgressBar( game, "Tech" );
+	this.add( this.tech );
 }
 
 TribePanel.prototype.layout = function() {
@@ -23,6 +26,10 @@ TribePanel.prototype.layout = function() {
 
 	this.info.x = Panel.MARGIN;
 	this.info.y = this.title.bottom + Panel.MARGIN;
+
+	this.tech.resize( this.reqWidth - Panel.MARGIN*2, RGButton.HEIGHT );
+	this.tech.x = Panel.MARGIN;
+	this.tech.y = this.reqHeight - this.tech.height - Panel.MARGIN;
 }
 
 TribePanel.prototype.select = function( tribe, refresh ) {
@@ -39,10 +46,14 @@ TribePanel.prototype.select = function( tribe, refresh ) {
 	if (tribe == Universe.player) {
 		this.info.text =  
 			"Turn: " + Universe.turn + "\n" +
-			"Gold: " + tribe.gold + "\n" + 
-			"Tech level: " + tribe.tech;;
+			"Gold: " + tribe.gold;
+		this.tech.visible = true;
+		this.tech.maxValue = tribe.tech * 100;
+		this.tech.value = tribe.progress;
+		this.tech.label = "Tech " + tribe.tech;
 	} else {
 		this.info.text =  "Turn: " + Universe.turn;
+		this.tech.visible = false;
 	}
 
 	this.layout();

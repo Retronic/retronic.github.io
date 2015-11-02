@@ -23,6 +23,9 @@ function Island( x, y, params ) {
 
 	this.onChanged = new Phaser.Signal();
 
+	this.land = null;
+	this.shore = null;
+
 	this.buildMap();
 }
 
@@ -36,11 +39,13 @@ Island.RICH		= +1;
 Island.POOR		= -1;
 
 Island.MAP_SIZE	= 40;
+Island.BMP_SIZE	= 256;
 
 Island.prototype.grow = function() {
 
 	if (this.tribe) {
 		this.tribe.gold += this.getEarnings();
+		this.tribe.progress += this.getScience();
 	}
 	
 	var changed = false;
@@ -129,6 +134,44 @@ Island.prototype.buildMap = function() {
 		}
 
 	} while (square < limit);
+
+	var bmp = game.add.bitmapData( Island.MAP_SIZE, Island.MAP_SIZE, Universe.id() );
+	for (var i=0; i < Island.MAP_SIZE; i++) {
+		for (var j=0; j < Island.MAP_SIZE; j++) {
+			if (this.map[i][j]) {
+				bmp.setPixel( j, i, 0xff, 0xff, 0xff, false );
+			}
+		}
+	}
+	bmp.context.putImageData( bmp.imageData, 0, 0 );
+
+	this.land = game.add.renderTexture( Island.BMP_SIZE, Island.BMP_SIZE );
+	this.shore = game.add.renderTexture( Island.BMP_SIZE, Island.BMP_SIZE );
+
+	var image = new Phaser.Image( game, 0, 0, bmp );
+	image.smoothed = false;
+	image.anchor.set( 0.5, 0.5 );
+	image.x = image.y = Island.BMP_SIZE / 2;
+	image.pivot.set( 0.5, 0.5 );
+	image.angle = Math.random() * 360;
+	var zoom = Island.BMP_SIZE / Island.MAP_SIZE / Math.SQRT2
+	image.scale.set( zoom, zoom );
+	image.updateTransform();
+	this.land.render( image );
+
+	image.x -= zoom;
+	image.updateTransform();
+	this.shore.render( image );
+	image.x += 2*zoom;
+	image.updateTransform();
+	this.shore.render( image );
+	image.x -= zoom;
+	image.y -= zoom;
+	image.updateTransform();
+	this.shore.render( image );
+	image.y += 2*zoom;
+	image.updateTransform();
+	this.shore.render( image );
 }
 
 Island.prototype.colonize = function( tribe, size ) {
@@ -143,7 +186,6 @@ Island.prototype.colonize = function( tribe, size ) {
 	if (tribe == Universe.player) {
 		gamelog.message( 2, this.name + ' has been colonized', function() {
 			oceanTribes.switchPanel( IslandMainPanel ).select( this );
-			console.log( 'click', this );
 		}, this );
 	}
 }
@@ -169,6 +211,11 @@ Island.prototype.getProduction = function() {
 Island.prototype.getEarnings = function() {
 	var earnings = Math.floor( this.population );
 	return earnings;
+}
+
+Island.prototype.getScience = function() {
+	var science = Math.floor( this.population * this.population / this.size );
+	return science;
 }
 
 Island.randomName = function() {

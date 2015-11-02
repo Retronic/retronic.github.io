@@ -123,7 +123,9 @@ AssaultPopUp.prototype.assaultOver = function( attackersWin ) {
 }
 
 AssaultPopUp.attack = function( fleet ) {
-	return Math.random() < 0.5;
+	// REFACTOR ME
+	//     attack          defense            
+	return Math.random() > Math.random() * (fleet.to.has( Buildings.OUTPOST ) ? 5 : 1);
 }
 
 AssaultPopUp.resolve = function( fleet ) {

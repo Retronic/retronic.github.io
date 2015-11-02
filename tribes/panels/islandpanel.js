@@ -44,10 +44,11 @@ IslandPanel.prototype.layout = function() {
 	this.bg.drawRect( Panel.MARGIN + Panel.LINE, p + Panel.LINE, m - Panel.LINE*2, m - Panel.LINE*2 );
 	this.sectionTop = p + m;
 
-	if (this.image) {
-		this.image.x = this.reqWidth / 2;
-		this.image.y = p + m/2;
-		this.image.scale.setTo( 5, 5 );
+	if (this.land) {
+		this.land.x = this.shore.x = this.reqWidth / 2;
+		this.land.y = this.shore.y = p + m/2;
+		this.land.scale.setTo( m / Island.BMP_SIZE, m / Island.BMP_SIZE );
+		this.shore.scale.setTo( m / Island.BMP_SIZE, m / Island.BMP_SIZE );
 	}
 
 	this.info.x = this.reqWidth - this.info.textWidth - Panel.MARGIN - Panel.LINE*2;
@@ -73,7 +74,8 @@ IslandPanel.prototype.select = function( island, refresh ) {
 
 	if (this.island) {
 		this.island.onChanged.remove( this.onIslandChanged, this );
-		this.remove( this.image );
+		this.remove( this.land );
+		this.remove( this.shore );
 	}
 
 	this.island = island;
@@ -100,17 +102,17 @@ IslandPanel.prototype.select = function( island, refresh ) {
 	}
 	this.info.text = type.join( '\n' ) || 'normal';
 
-	if (island.tribe == Universe.player) {
-		this.buildingsList.text = island.buildings.join( '\n' );
-	} else {
-		this.buildingsList.text = "";
-	}
+	this.buildingsList.text = island.buildings.join( '\n' );
 
-	this.image = game.add.image( 0, 0, this.island.view.button.texture, null, this );
-	this.image.anchor.setTo( 0.5, 0.5 );
-	this.image.pivot.setTo( 0.5, 0.5 );
-	this.image.angle = this.island.view.button.angle;
-	this.image.tint = this.island.view.button.tint;
+	this.shore = game.add.image( 0, 0, this.island.shore, null, this );
+	this.shore.anchor.setTo( 0.5, 0.5 );
+	this.shore.pivot.setTo( 0.5, 0.5 );
+	this.shore.tint = this.island.view.shore.tint;
+
+	this.land = game.add.image( 0, 0, this.island.land, null, this );
+	this.land.anchor.setTo( 0.5, 0.5 );
+	this.land.pivot.setTo( 0.5, 0.5 );
+	this.land.tint = this.island.view.button.tint;
 
 	this.layout();
 

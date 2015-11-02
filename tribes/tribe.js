@@ -26,6 +26,8 @@ function Tribe( params ) {
 
 	this.state = Tribe.State.NOT_PROCESSED;
 	this.assaulting = [];
+
+	this.viewDistance = Math.sqrt( Universe.MIN_DISTANCE2 ) * 3;
 }
 
 Tribe.NORSE	= function() { return new Tribe( {name: 'Norse', flag: 0, color: 0xff4040} ) };
@@ -46,6 +48,25 @@ Tribe.prototype.grow = function() {
 		var island = this.islands[i];
 		island.launched = false;
 		island.grow();
+	}
+
+	var techUp = false;
+	var upgrades = [];
+	while (this.progress >= this.tech * 100) {
+		this.progress -= this.tech * 100;
+		this.tech++;
+		var upgrade = this.techUp();
+		if (upgrade) {
+			upgrades.push( upgrade );
+		}
+		techUp = true;
+	}
+
+	if (this == Universe.player && techUp) {
+		gamelog.message( 6, 'You have reached tech level ' + this.tech );
+		if (upgrades.length) {
+			gamelog.message( 0, upgrades.join( '\n' ) );
+		}
 	}
 
 	this.assaulting = [];
@@ -116,6 +137,23 @@ Tribe.prototype.think = function() {
 		this.launch( this, src, dst, 1 + Math.floor(Math.random() * src.population / 2), Fleet.SETTLER );
 	}
 
+	for (var i in this.islands) {
+		var island = this.islands[i];
+		if (island.curTask == null) {
+			if (!island.has( Buildings.OUTPOST )) {
+				island.curTask = {
+					name		: Buildings.OUTPOST,
+					progress	: 0
+				}
+			} else if (!island.has( Buildings.SHIPYARD )) {
+				island.curTask = {
+					name		: Buildings.SHIPYARD,
+					progress	: 0
+				}
+			}
+		}
+	}
+
 	this.state = Tribe.State.PROCESSED;
 }
 
@@ -184,5 +222,13 @@ Tribe.prototype.updateIslandsVisibility = function() {
 }
 
 Tribe.prototype.getViewDistance = function() {
-	return Math.sqrt( Universe.MIN_DISTANCE2 ) * 3;
+	return  this.viewDistance;
+}
+
+Tribe.prototype.techUp = function() {
+	if (this.tech == 2 || this.tech == 4 || this.tech == 7) {
+		this.viewDistance += Math.sqrt( Universe.MIN_DISTANCE2 );
+		this.updateIslandsVisibility();
+		return "Now you can sail further";
+	}
 }

@@ -28,7 +28,7 @@ OceanTribes.prototype.createChildren = function () {
 
 OceanTribes.prototype.layout = function () {
 
-	this.tribePanel.resize( 200, 100 );
+	this.tribePanel.resize( 200, 120 );
 	this.tribePanel.x = this.reqWidth - this.tribePanel.width;
 
 	this.layoutPanel();
