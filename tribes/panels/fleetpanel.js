@@ -76,7 +76,7 @@ FleetPanel.prototype.mapClicked = function( object ) {
 	if (object instanceof Fleet) {
 		this.select( object );
 	} else if (object instanceof Island) {
-		oceanTribes.switchPanel( IslandMainPanel ).select( object );
+		scene.switchPanel( IslandMainPanel ).select( object );
 	}
 }
 
@@ -121,12 +121,12 @@ FleetPanel.prototype.select = function( fleet, refresh ) {
 
 	this.layout();
 
-	oceanTribes.map.select( fleet );
+	scene.map.select( fleet );
 }
 
 FleetPanel.prototype.onFleetChanged = function() {
 	this.select( this.fleet, true );
 	if (!this.fleet.isAlive) {
-		oceanTribes.switchPanel( IslandMainPanel ).select( this.fleet.to );
+		scene.switchPanel( IslandMainPanel ).select( this.fleet.to );
 	}
 }

@@ -8,7 +8,7 @@ PopUp.prototype.constructor = PopUp;
 PopUp.all = [];
 
 PopUp.show = function( popup ) {
-	oceanTribes.add( popup );
+	scene.add( popup );
 	PopUp.all.push( popup );
 	return popup;
 }

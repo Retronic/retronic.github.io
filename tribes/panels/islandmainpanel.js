@@ -70,9 +70,9 @@ IslandMainPanel.prototype.select = function( island, refresh ) {
 }
 
 IslandMainPanel.prototype.onMigrate = function() {
-	oceanTribes.switchPanel( MigratePanel ).select( this.island );
+	scene.switchPanel( MigratePanel ).select( this.island );
 }
 
 IslandMainPanel.prototype.onTask = function() {
-	oceanTribes.switchPanel( ConstructPanel ).select( this.island );
+	scene.switchPanel( ConstructPanel ).select( this.island );
 }

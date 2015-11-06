@@ -110,7 +110,7 @@ Tribe.prototype.launch = function( tribe, from, to, size, type ) {
 	from.population -= size;
 	from.launched = true;
 
-	oceanTribes.map.addFleet( fleet );
+	scene.map.addFleet( fleet );
 
 	return fleet;
 }

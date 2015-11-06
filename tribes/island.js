@@ -10,11 +10,7 @@ function Island( x, y, params ) {
 	this.name		= params.name || '';
 	this.size		= Math.round( params.size / 10 ) * 10 || Island.MIN_SIZE;
 	this.population	= params.population || 0;
-	this.fertility	= params.fertility || Island.NORMAL;
-	this.minerals	= params.minerals || Island.NORMAL;
-	this.trade		= params.trade || false;
-	this.ruins		= params.ruins || false;
-	this.cliffs		= params.cliffs || false;
+	this.resource	= params.resource || null;
 
 	this.tribe = null;
 	this.buildings = [];
@@ -32,11 +28,13 @@ function Island( x, y, params ) {
 Island.MIN_SIZE = 20;
 Island.MAX_SIZE = 120;
 
-Island.NORMAL	= 0;
-Island.FERTILE	= +1;
-Island.BARREN	= -1;
-Island.RICH		= +1;
-Island.POOR		= -1;
+Island.Resources = {
+	WHEAT	: "wheat",		// Faster growth
+	STONE	: "stone",		// Faster construction
+	CLIFFS 	: "cliffs",		// Stronger in defense
+	RUINS 	: "ruins",		// Large scince output
+	TIMBER	: "timber"		// Faster shipbuilding
+}
 
 Island.MAP_SIZE	= 40;
 Island.BMP_SIZE	= 256;
@@ -52,9 +50,7 @@ Island.prototype.grow = function() {
 
 	if (this.population && this.has( Buildings.OUTPOST )) {
 		var grow = this.population * 0.02 * Math.sqrt( 1 - this.population / this.size );
-		if (this.fertility == Island.BARREN) {
-			grow *= 0.5;
-		} else if (this.fertility == Island.FERTILE) {
+		if (this.resource == Island.Resources.WHEAT) {
 			grow *= 1.5;
 		}
 		var newPop = Math.min( this.population + grow, this.size );
@@ -69,7 +65,7 @@ Island.prototype.grow = function() {
 		if (this.curTask.progress >= Buildings[this.curTask.name].cost) {
 			if (this.tribe == Universe.player) {
 				gamelog.message( 1, this.name + ' has completed ' + this.curTask.name, function() {
-					oceanTribes.switchPanel( IslandMainPanel ).select( this );
+					scene.switchPanel( IslandMainPanel ).select( this );
 				}, this );
 			}
 			this.buildings.push( this.curTask.name );
@@ -185,7 +181,7 @@ Island.prototype.colonize = function( tribe, size ) {
 
 	if (tribe == Universe.player) {
 		gamelog.message( 2, this.name + ' has been colonized', function() {
-			oceanTribes.switchPanel( IslandMainPanel ).select( this );
+			scene.switchPanel( IslandMainPanel ).select( this );
 		}, this );
 	}
 }
@@ -200,10 +196,8 @@ Island.prototype.canLaunch = function() {
 
 Island.prototype.getProduction = function() {
 	var prod = Math.floor( this.population );
-	if (this.minerals == Island.POOR) {
+	if (this.resource == Island.Resources.STONE) {
 		prod *= 0.5;
-	} else if (this.minerals == Island.RICH) {
-		prod *= 1.5;
 	}
 	return prod;
 }

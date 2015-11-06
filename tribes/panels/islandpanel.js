@@ -62,7 +62,7 @@ IslandPanel.prototype.mapClicked = function( object ) {
 	if (object instanceof Island) {
 		this.select( object );
 	} else if (object instanceof Fleet) {
-		oceanTribes.switchPanel( FleetPanel ).select( object );
+		scene.switchPanel( FleetPanel ).select( object );
 	}
 }
 
@@ -89,18 +89,7 @@ IslandPanel.prototype.select = function( island, refresh ) {
 		this.name.color = 0xFFFFFF;
 	}
 
-	var type = [];
-	if (island.fertility == Island.FERTILE) {
-		type.push( "fertile" );
-	} else if (island.fertility == Island.BARREN) {
-		type.push( "barren" );
-	}
-	if (island.minerals == Island.RICH) {
-		type.push( "mineral rich" );
-	} else if (island.minerals == Island.POOR) {
-		type.push( "mineral poor" );
-	}
-	this.info.text = type.join( '\n' ) || 'normal';
+	this.info.text = island.resource ? island.resource : "";
 
 	this.buildingsList.text = island.buildings.join( '\n' );
 
@@ -116,7 +105,7 @@ IslandPanel.prototype.select = function( island, refresh ) {
 
 	this.layout();
 
-	oceanTribes.map.select( island );
+	scene.map.select( island );
 }
 
 IslandPanel.prototype.onIslandChanged = function() {

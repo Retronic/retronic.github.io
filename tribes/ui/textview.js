@@ -25,8 +25,12 @@ TextView.prototype.createChildren = function() {
 
 TextView.prototype.layout = function() {
 	if (this._align == "center") {
-		this.tf.x = (this.reqWidth - this.tf.textWidth) / 2;
+		this.tf.x = Math.floor( (this.reqWidth - this.tf.textWidth) / 2 );
 	}
+}
+
+TextView.prototype.getWidth = function( value ) {
+	return this._align == "center" ? this.reqWidth : this.tf.textWidth;
 }
 
 TextView.prototype.getHeight = function( value ) {

@@ -10,7 +10,7 @@
 	<script type="text/javascript" src="panels/panel.js"></script>
 	<script type="text/javascript" src="ui/popup.js"></script>
 	<script type="text/javascript" src="popups/assaultpopup.js"></script>
-	<script type="text/javascript" src="oceantribes.js"></script>
+	<script type="text/javascript" src="gamescene.js"></script>
 	<script type="text/javascript" src="universe.js"></script>
 	<script type="text/javascript" src="buildings.js"></script>
 	<script type="text/javascript" src="island.js"></script>
@@ -32,6 +32,7 @@
 	<script type="text/javascript" src="ui/rgbutton.js"></script>
 	<script type="text/javascript" src="ui/progressbar.js"></script>
 	<script type="text/javascript" src="ui/gamelog.js"></script>
+	<script type="text/javascript" src="generationscene.js"></script>
     <style type="text/css">
         body {
             margin: 0;
@@ -43,6 +44,7 @@
 <script type="text/javascript">
 
 var game = new Phaser.Game( 800, 800, Phaser.AUTO, '', {preload: preload, create: create, update: update} );
+var scene;
 
 function preload() {
 	game.scale.scaleMode = Phaser.ScaleManager.RESIZE;
@@ -70,43 +72,30 @@ function preload() {
 }
 
 function create() {
-
-	while (!Universe.build( {nIslands: 30, tribes: Tribe.ALL()} ));
-
-	game.world.add( new OceanTribes( game ) );
-
-	game.scale.onSizeChange.add( function() {
-		oceanTribes.resize( game.width, game.height );
-	} );
-	game.scale.onSizeChange.dispatch();
-
-	oceanTribes.switchPanel( IslandMainPanel ).select( Universe.player.home );
-	oceanTribes.map.updateFieldOfView( Universe.player );
-
-	var music = game.add.audio( 'music' );
-	music.onDecoded.add( function() {
-		music.loopFull();
-	}, this );
+	switchScene( GenerationScene );
+	game.scale.onSizeChange.add( layout );
 }
 
 function update() {
+	if (scene) {
+		scene.step();
+	}
+}
 
-	switch (Universe.curTribe.state) {
-	case Tribe.State.NOT_GROWN:
-		Universe.curTribe.grow();
-		oceanTribes.tribePanel.select( Universe.curTribe );
-		if (Universe.curTribe == Universe.player) {
-			oceanTribes.map.updateFieldOfView( Universe.player );
-		}
-		break;
-	case Tribe.State.NOT_PROCESSED:
-		Universe.curTribe.process();
-		break;
-	case Tribe.State.PROCESSED:
-		Universe.endTurn();
-		break;
-	case Tribe.State.PROCESSING:
-		break;
+function switchScene( Scene ) {
+	if (scene) {
+		game.world.remove( scene );
+	}
+	scene = new Scene( game );
+	scene.init();
+	game.world.add( scene );
+
+	layout();
+}
+
+function layout() {
+	if (scene) {
+		scene.resize( game.width, game.height );
 	}
 }
 

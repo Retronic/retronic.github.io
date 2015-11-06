@@ -74,7 +74,7 @@ MigratePanel.prototype.layout = function() {
 }
 
 MigratePanel.prototype.onCancel = function() {
-	oceanTribes.switchPanel( IslandMainPanel ).select( this.island );
+	scene.switchPanel( IslandMainPanel ).select( this.island );
 }
 
 MigratePanel.prototype.onOK = function() {
@@ -84,7 +84,7 @@ MigratePanel.prototype.onOK = function() {
 	var fleet = Universe.curTribe.launch( this.island.tribe, this.island, this.to, this.size.value, this.fleetType );
 	this.island.tribe.gold -= this.price;
 	
-	oceanTribes.switchPanel( FleetPanel ).select( fleet );
+	scene.switchPanel( FleetPanel ).select( fleet );
 }
 
 MigratePanel.prototype.mapClicked = function( object ) {
@@ -131,7 +131,7 @@ MigratePanel.prototype.mapClicked = function( object ) {
 		this.updateCost();
 		this.updateOK();
 
-		oceanTribes.map.link( this.island, this.to );
+		scene.map.link( this.island, this.to );
 	}
 }
 
@@ -139,7 +139,7 @@ MigratePanel.prototype.select = function( island ) {
 
 	IslandPanel.prototype.select.call( this, island );
 
-	oceanTribes.map.link( this.island, null );
+	scene.map.link( this.island, null );
 }
 
 MigratePanel.prototype.updateCost = function() {

@@ -83,8 +83,8 @@ ConstructPanel.prototype.select = function( island, refresh ) {
 }
 
 ConstructPanel.prototype.onCancel = function() {
-	oceanTribes.switchPanel( IslandMainPanel );
-	oceanTribes.map.onClick.dispatch( this.island );
+	scene.switchPanel( IslandMainPanel );
+	scene.map.onClick.dispatch( this.island );
 }
 
 ConstructPanel.prototype.onBuilding = function( btn ) {
@@ -95,5 +95,5 @@ ConstructPanel.prototype.onBuilding = function( btn ) {
 			progress: 0
 		}
 	}
-	oceanTribes.switchPanel( IslandMainPanel ).select( this.island );
+	scene.switchPanel( IslandMainPanel ).select( this.island );
 }

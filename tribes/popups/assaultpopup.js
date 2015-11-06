@@ -93,7 +93,7 @@ AssaultPopUp.prototype.assaultOver = function( attackersWin ) {
 	AssaultPopUp.aftermath( this.fleet, attackersWin, this.attackers.length || this.defenders.length );
 
 	var callback = function() {
-		oceanTribes.switchPanel( IslandMainPanel ).select( island );
+		scene.switchPanel( IslandMainPanel ).select( island );
 	};
 	if (attackersWin) {
 		if (this.fleet.tribe == Universe.player) {
@@ -111,12 +111,12 @@ AssaultPopUp.prototype.assaultOver = function( attackersWin ) {
 
 
 	if (attackersWin) {
-		oceanTribes.map.updateFieldOfView( Universe.player );
+		scene.map.updateFieldOfView( Universe.player );
 	}
 
 	// Hiding the window and selecting the island on the map
 	this.hide();
-	oceanTribes.switchPanel( IslandMainPanel ).select( island );
+	scene.switchPanel( IslandMainPanel ).select( island );
 
 	// We can now proceed with the rest of the actions of the current tribe
 	Universe.curTribe.state = Tribe.State.NOT_PROCESSED;
@@ -125,7 +125,7 @@ AssaultPopUp.prototype.assaultOver = function( attackersWin ) {
 AssaultPopUp.attack = function( fleet ) {
 	// REFACTOR ME
 	//     attack          defense            
-	return Math.random() > Math.random() * (fleet.to.has( Buildings.OUTPOST ) ? 5 : 1);
+	return Math.random() > Math.random() * (fleet.to.has( Buildings.OUTPOST ) ? 2 : 1);
 }
 
 AssaultPopUp.resolve = function( fleet ) {
@@ -154,7 +154,7 @@ AssaultPopUp.aftermath = function( fleet, success, survivors ) {
 		fleet.tribe.addIsland( island, survivors );
 
 		if (island.tribe == Universe.player || defenders == Universe.player) {
-			oceanTribes.map.updateFieldOfView( Universe.player );
+			scene.map.updateFieldOfView( Universe.player );
 		}
 	} else {
 		// The attackers have lost. Adjusting the size of population of the island

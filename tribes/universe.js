@@ -25,7 +25,7 @@ Universe = new (function() {
 	};
 
 	this.build = function( par ) {
-
+		
 		this.reset();
 
 		var seed = new Date().getTime();
@@ -73,18 +73,14 @@ Universe = new (function() {
 
 			// Fertility
 			var fert = fertNoise.noiseHigh( x / Universe.SIZE * 2, y / Universe.SIZE * 2, 2, 1 ) + 1;
-			if (fert < 0.6) {
-				params.fertility = Island.BARREN;
-			} else if (fert > 1.4) {
-				params.fertility = Island.FERTILE;
+			if (fert > 1.4) {
+				params.resource = Island.Resources.WHEAT;
 			}
 
 			// Minerals
 			var min = (fertNoise.noiseHigh( x / Universe.SIZE * 2, y / Universe.SIZE * 2, 2, 1 ) + 1) * Math.random();
-			if (min < 0.1) {
-				params.minerals = Island.POOR;
-			} else if (min > 0.9) {
-				params.minerals = Island.RICH;
+			if (min > 0.9) {
+				params.resource = Island.Resources.STONE;
 			}
 
 			do {
@@ -103,10 +99,8 @@ Universe = new (function() {
 
 			// An island can become a home island if
 			// - it's medium sized
-			// - it's good enough, but not too good
 			if (island.size > Island.MIN_SIZE + (Island.MAX_SIZE - Island.MIN_SIZE) * 1/3 &&
-				island.size < Island.MIN_SIZE + (Island.MAX_SIZE - Island.MIN_SIZE) * 2/3 &&
-				island.fertility + island.minerals == 0) {
+				island.size < Island.MIN_SIZE + (Island.MAX_SIZE - Island.MIN_SIZE) * 2/3) {
 				homeIslands.push( island );
 			}
 		}
@@ -136,6 +130,7 @@ Universe = new (function() {
 		}
 
 		if (homeIslands.length < par.tribes.length) {
+			console.log( "not enough home island candidates" );
 			return false;
 		}
 
@@ -149,14 +144,18 @@ Universe = new (function() {
 
 			// If we are out of "good" islands, recreate the whole universe
 			if (!homeIslands.length) {
+				console.log( 'no more home island candidates' );
 				return false;
 			}
 
-			// Select a random "good" islands, make it home for one of the tribes,
+			// Select a random "good" island, make it home for one of the tribes,
 			// remove it from the list of "good" islands
 			var tribe = par.tribes[i];
 			var index = rnd.between( 0, homeIslands.length-1 );
 			var island = homeIslands[index];
+			// All home islands are equal
+			island.resource = null;
+			island.size = Math.round( (Island.MIN_SIZE + Island.MAX_SIZE) / 20 ) * 10;
 			tribe.addIsland( island, island.size / 2 );
 			homeIslands.splice( index, 1 );
 
@@ -165,7 +164,7 @@ Universe = new (function() {
 			for (j=homeIslands.length-1; j >= 0; j--) {
 				var isl = homeIslands[j];
 				if (this.distance2( island, isl ) < 81 * Universe.MIN_DISTANCE2) {
-					console.log( this.time2sail( tribe, island, isl ), 'remove' );
+					console.log( 'discarding home island candidate' );
 					homeIslands.splice( j, 1 );
 				}
 			}

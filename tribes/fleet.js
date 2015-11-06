@@ -58,7 +58,7 @@ Fleet.prototype.arrive = function() {
 
 		if (this.tribe == Universe.player) {
 			gamelog.message( 3, this.size + ' settlers from ' + this.from.name + ' has arrived to ' + this.to.name, function() {
-				oceanTribes.switchPanel( IslandMainPanel ).select( this.to );
+				scene.switchPanel( IslandMainPanel ).select( this.to );
 			}, this );
 		}
 
