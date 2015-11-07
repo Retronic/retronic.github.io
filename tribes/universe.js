@@ -170,6 +170,12 @@ Universe = new (function() {
 			}
 		}
 
+		// It's the last thing to do, because want to be sure
+		// that this version of the world is good enough
+		for (var i in this.islands) {
+			this.islands[i].buildMap();
+		}
+
 		return true;
 	}
 

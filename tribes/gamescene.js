@@ -26,6 +26,7 @@ GameScene.prototype.createChildren = function () {
 
 	this.tribePanel = new TribePanel( game );
 	this.add( this.tribePanel );
+	this.tribePanel.select( Universe.curTribe );
 
 	this.gamelog = new GameLog( game );
 	this.gamelog.x = Panel.MARGIN;

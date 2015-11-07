@@ -57,8 +57,6 @@ MapView.prototype.createChildren = function() {
 
 MapView.prototype.layout = function() {
 
-	
-
 	this.zoom = Math.min( this.reqWidth, this.reqHeight ) / Universe.SIZE;
 
 	this.ocean.x = -Universe.SIZE * this.zoom;

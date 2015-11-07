@@ -22,7 +22,7 @@ function Island( x, y, params ) {
 	this.land = null;
 	this.shore = null;
 
-	this.buildMap();
+//	this.buildMap();
 }
 
 Island.MIN_SIZE = 20;
