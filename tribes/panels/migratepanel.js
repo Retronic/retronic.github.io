@@ -31,10 +31,6 @@ MigratePanel.prototype.createChildren = function() {
 	this.size.visible = false;
 	this.add( this.size );
 
-	this.cost = new TextView( game, "???", "font12", 12, "center" );
-	this.cost.visible = false;
-	this.add( this.cost );
-
 	this.ok = new RGButton( game, "OK" );
 	this.ok.onClick.add( this.onOK, this );
 	this.addChild( this.ok );
@@ -60,9 +56,6 @@ MigratePanel.prototype.layout = function() {
 	this.time.x = this.reqWidth - Panel.MARGIN - this.time.textWidth;
 	this.time.y = this.toValue.y;
 
-	this.cost.resize( this.reqWidth, 0 );
-	this.cost.y = this.size.bottom + Panel.MARGIN;
-
 	this.cancel.resize( this.reqWidth - Panel.MARGIN*2, RGButton.HEIGHT );
 	this.cancel.x = (this.reqWidth - this.cancel.width) / 2;
 	this.cancel.y = this.reqHeight - Panel.MARGIN - this.cancel.height;
@@ -82,7 +75,6 @@ MigratePanel.prototype.onOK = function() {
 	game.add.audio( 'launch' ).play();
 
 	var fleet = Universe.curTribe.launch( this.island.tribe, this.island, this.to, this.size.value, this.fleetType );
-	this.island.tribe.gold -= this.price;
 	
 	scene.switchPanel( FleetPanel ).select( fleet );
 }
@@ -97,7 +89,7 @@ MigratePanel.prototype.mapClicked = function( object ) {
 			if (!object.tribe) {
 				this.fleetType = Fleet.SETTLER;
 			} else if (object.tribe == Universe.player) {
-				this.fleetType = object.has( Buildings.OUTPOST ) ? Fleet.TRANSPORT : Fleet.SETTLER;
+				this.fleetType = Fleet.TRANSPORT;
 			} else {
 				this.fleetType = Fleet.NAVAL;
 			}
@@ -128,7 +120,6 @@ MigratePanel.prototype.mapClicked = function( object ) {
 		}
 
 		this.updateSize();
-		this.updateCost();
 		this.updateOK();
 
 		scene.map.link( this.island, this.to );
@@ -140,33 +131,6 @@ MigratePanel.prototype.select = function( island ) {
 	IslandPanel.prototype.select.call( this, island );
 
 	scene.map.link( this.island, null );
-}
-
-MigratePanel.prototype.updateCost = function() {
-	if (this.fleetType) {
-
-		switch (this.fleetType) {
-		case Fleet.TRANSPORT:
-			this.price = this.size.value * 10;
-			break;
-		case Fleet.NAVAL:
-			this.price = this.size.value * 20;
-			break;
-		case Fleet.SETTLER:
-			this.price = this.size.value * 100;
-			break;
-		}
-		this.price = 0;
-
-		this.cost.visible = true;
-		this.cost.text = 'Cost: ' + this.price;
-		this.cost.color = this.price <= this.island.tribe.gold ? 0xffff88 : 0xff0000;
-
-	} else {
-
-		this.cost.visible = false;
-	
-	}
 }
 
 MigratePanel.prototype.updateSize = function() {
@@ -187,5 +151,5 @@ MigratePanel.prototype.updateSize = function() {
 }
 
 MigratePanel.prototype.updateOK = function() {
-	this.ok.visible = (this.fleetType && this.price <= this.island.tribe.gold);
+	this.ok.visible = (this.fleetType);
 }

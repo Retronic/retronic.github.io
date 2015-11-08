@@ -19,9 +19,16 @@ IslandPanel.prototype.createChildren = function() {
 
 	Panel.prototype.createChildren.call( this );
 
+	this.ocean = game.add.tileSprite( 0, 0, 100, 100, 'ocean', null, this );
+	this.ocean.autoScroll( 8, 2 );
+
 	this.name = new TextView( game, '', 'font12', 12, 'center' );
 	this.name.y = Panel.MARGIN;
 	this.add( this.name );
+
+	this.flotilla = game.add.image( 0, 0, 'ship', null, this );
+	this.flotilla.anchor.set( 0.5, 0.5 );
+	this.flotilla.smoothed = false;
 
 	this.info = game.add.bitmapText( 0, 0, "font8", "", 8, this );
 	this.info.smoothed = false;
@@ -40,15 +47,21 @@ IslandPanel.prototype.layout = function() {
 	var p = this.name.bottom + Panel.MARGIN;
 	this.bg.beginFill( 0xFFFFFF );
 	this.bg.drawRect( Panel.MARGIN, p, m, m );
-	this.bg.beginFill( 0x003344 );
-	this.bg.drawRect( Panel.MARGIN + Panel.LINE, p + Panel.LINE, m - Panel.LINE*2, m - Panel.LINE*2 );
 	this.sectionTop = p + m;
+
+	this.ocean.x = Panel.MARGIN + Panel.LINE;
+	this.ocean.y = p + Panel.LINE;
+	this.ocean.width = m - Panel.LINE*2;
+	this.ocean.height = m - Panel.LINE*2;
 
 	if (this.land) {
 		this.land.x = this.shore.x = this.reqWidth / 2;
 		this.land.y = this.shore.y = p + m/2;
 		this.land.scale.setTo( m / Island.BMP_SIZE, m / Island.BMP_SIZE );
 		this.shore.scale.setTo( m / Island.BMP_SIZE, m / Island.BMP_SIZE );
+
+		this.flotilla.x = this.land.x + m / 4;
+		this.flotilla.y = this.land.y + m / 4;
 	}
 
 	this.info.x = this.reqWidth - this.info.textWidth - Panel.MARGIN - Panel.LINE*2;
@@ -102,6 +115,11 @@ IslandPanel.prototype.select = function( island, refresh ) {
 	this.land.anchor.setTo( 0.5, 0.5 );
 	this.land.pivot.setTo( 0.5, 0.5 );
 	this.land.tint = this.island.view.button.tint;
+
+	this.flotilla.visible = island.tribe == Universe.player && island.ship;
+	if (island.tribe) {
+		this.flotilla.frame = island.tribe.flag;
+	}
 
 	this.layout();
 

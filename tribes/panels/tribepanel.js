@@ -45,8 +45,7 @@ TribePanel.prototype.select = function( tribe, refresh ) {
 
 	if (tribe == Universe.player) {
 		this.info.text =  
-			"Turn: " + Universe.turn + "\n" +
-			"Gold: " + tribe.gold;
+			"Turn: " + Universe.turn;
 		this.tech.visible = true;
 		this.tech.maxValue = tribe.tech * 100;
 		this.tech.value = tribe.progress;

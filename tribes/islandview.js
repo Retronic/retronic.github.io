@@ -25,8 +25,20 @@ function IslandView( game, island ) {
 	this.button.smoothed = false;
 	this.button.anchor.set( 0.5, 0.5 );
 	this.button.pivot.set( 0.5, 0.5 );
-	this.button.tint = 0x448844;
+	this.button.tint = 0x558844;
 	this.addChild( this.button );
+
+	switch (island.resource) {
+	case Island.Resources.GAME:
+		this.button.tint = 0x225533;
+		break;
+	case Island.Resources.STONE:
+		this.button.tint = 0x888877;
+		break;
+	case Island.Resources.CLIFFS:
+		this.shore.tint = 0xBBBBAA;
+		break;
+	}
 
 	this.updateSize();
 
@@ -41,10 +53,21 @@ function IslandView( game, island ) {
 		this.flag.visible = false;
 	}
 
-	this.name = game.add.bitmapText( 10, 10, "font8", island.name, 8, this );
+	this.flotilla = game.add.image( 16, 16, 'ship', null, this );
+	this.flotilla.anchor.set( 0.5, 0.5 );
+	this.flotilla.smoothed = false;
+
+	if (island.tribe && island.ship) {
+		this.flotilla.visible = true;
+		this.flotilla.frame = island.tribe.flag;
+	} else {
+		this.flotilla.visible = false;
+	}
+
+	this.name = game.add.bitmapText( 0, 10, "font8", island.name, 8, this );
 	this.name.smoothed = false;
 	this.name.tint = island.tribe ? island.tribe.color : 0xFFFFFF;
-	this.name.x = -this.name.textWidth / 2;
+	this.name.x = Math.floor( -this.name.textWidth / 2 );
 
 	this.visible = false;
 }
@@ -78,5 +101,12 @@ IslandView.prototype.refresh = function() {
 		this.flag.frame = island.tribe.flag;
 	} else {
 		this.flag.visible = false;
+	}
+
+	if (island.tribe && island.ship) {
+		this.flotilla.visible = true;
+		this.flotilla.frame = island.tribe.flag;
+	} else {
+		this.flotilla.visible = false;
 	}
 }

@@ -72,8 +72,8 @@ MapView.prototype.layout = function() {
 	var oy = (this.reqHeight - Universe.SIZE * this.zoom) / 2;
 	for (var i in this.islands) {
 		var island = this.islands[i];
-		island.x = island.data.x * this.zoom;
-		island.y = island.data.y * this.zoom;
+		island.x = Math.floor( island.data.x * this.zoom );
+		island.y = Math.floor( island.data.y * this.zoom );
 		island.zoom = this.zoom;
 
 		if (island.data.tribe == Universe.player) {
@@ -84,8 +84,8 @@ MapView.prototype.layout = function() {
 	if (this.tween) {
 		this.tween.stop();
 	}
-	this.objects.x = (this.reqWidth - (this.minx + this.maxx) * this.zoom) / 2;
-	this.objects.y = (this.reqHeight - (this.miny + this.maxy) * this.zoom) / 2;
+	this.objects.x = Math.floor( (this.reqWidth - (this.minx + this.maxx) * this.zoom) / 2 );
+	this.objects.y = Math.floor( (this.reqHeight - (this.miny + this.maxy) * this.zoom) / 2 );
 
 	for (i in this.fleets) {
 		var fleet = this.fleets[i];
@@ -200,8 +200,8 @@ MapView.prototype.adjustWindow = function( tribe ) {
 		if (this.tween) {
 			this.tween.stop();
 		}
-		var cx = (this.reqWidth - (this.minx + this.maxx) * this.zoom) / 2;
-		var cy = (this.reqHeight - (this.miny + this.maxy) * this.zoom) / 2;
+		var cx = Math.floor( (this.reqWidth - (this.minx + this.maxx) * this.zoom) / 2 );
+		var cy = Math.floor( (this.reqHeight - (this.miny + this.maxy) * this.zoom) / 2 );
 		this.tween = game.add.tween( this.objects ).to( {x: cx, y: cy}, 1000, Phaser.Easing.Quadratic.InOut, true );
 	}
 }

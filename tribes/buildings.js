@@ -2,14 +2,17 @@ var Buildings = {};
 
 Buildings.OUTPOST	= "outpost";
 Buildings.SHIPYARD	= "shipyard";
-Buildings.BURIAL	= "burial grounds";
+Buildings.WALLS		= "walls";
+Buildings.CASTLE	= "castle";
+Buildings.STOREHOUSE= "storehouse";
 Buildings.SHRINE	= "shrine";
-Buildings.DOCKS		= "docks";
 Buildings.MARKET	= "marketplace";
+
+Buildings.FLOTILLA	= "flotilla";
 
 // Forge Workshop Longhouse Fort Trading post
 
-Buildings.ALL = [Buildings.OUTPOST, Buildings.SHIPYARD, Buildings.BURIAL, Buildings.SHRINE, Buildings.DOCKS, Buildings.MARKET];
+Buildings.ALL = [Buildings.OUTPOST, Buildings.SHIPYARD, Buildings.WALLS, Buildings.CASTLE, Buildings.STOREHOUSE, Buildings.SHRINE, Buildings.MARKET];
 
 Buildings[Buildings.OUTPOST] = {
 	cost	: 200,
@@ -17,26 +20,35 @@ Buildings[Buildings.OUTPOST] = {
 };
 
 Buildings[Buildings.SHIPYARD] = {
-	cost	: 300,
+	cost	: 400,
 	reqs	: [Buildings.OUTPOST]
 };
 
-Buildings[Buildings.BURIAL] = {
-	cost	: 10,
+Buildings[Buildings.WALLS] = {
+	cost	: 400,
+	reqs	: [Buildings.OUTPOST]
+};
+
+Buildings[Buildings.CASTLE] = {
+	cost	: 800,
+	reqs	: [Buildings.WALLS]
+};
+
+Buildings[Buildings.STOREHOUSE] = {
+	cost	: 400,
 	reqs	: [Buildings.OUTPOST]
 };
 
 Buildings[Buildings.SHRINE] = {
-	cost	: 10,
-	reqs	: [Buildings.BURIAL]
-};
-
-Buildings[Buildings.DOCKS] = {
-	cost	: 10,
-	reqs	: [Buildings.SHIPYARD]
+	cost	: 500,
+	reqs	: [Buildings.WALLS]
 };
 
 Buildings[Buildings.MARKET] = {
-	cost	: 10,
+	cost	: 500,
 	reqs	: [Buildings.OUTPOST]
+};
+
+Buildings[Buildings.FLOTILLA] = {
+	cost	: 250
 };

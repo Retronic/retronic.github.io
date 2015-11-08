@@ -21,6 +21,9 @@ IslandMainPanel.prototype.createChildren = function() {
 
 	this.migrate = new RGButton( game, "Transfer", this.onMigrate, this );
 	this.addChild( this.migrate );
+
+	this.build = new RGButton( game, "Build flotilla", this.onBuild, this );
+	this.addChild( this.build );
 }
 
 IslandMainPanel.prototype.layout = function() {
@@ -41,6 +44,8 @@ IslandMainPanel.prototype.layout = function() {
 	this.migrate.resize( this.reqWidth - Panel.MARGIN*2, RGButton.HEIGHT );
 	this.migrate.x = (this.reqWidth - this.migrate.width) / 2;
 	this.migrate.y = this.endTurn.y - this.construct.height - Panel.MARGIN;
+
+	this.build.copyBounds( this.migrate );
 }
 
 IslandMainPanel.prototype.select = function( island, refresh ) {
@@ -51,6 +56,7 @@ IslandMainPanel.prototype.select = function( island, refresh ) {
 		this.construct.visible = 
 		this.taskLabel.visible = true;
 		this.migrate.visible = island.canLaunch();
+		this.build.visible = island.has( Buildings.SHIPYARD ) && !island.ship && (island.curTask == null || island.curTask.name != Buildings.FLOTILLA);
 
 		if (island.curTask) {
 			var name = island.curTask.name;
@@ -65,7 +71,8 @@ IslandMainPanel.prototype.select = function( island, refresh ) {
 	} else {
 		this.construct.visible = 
 		this.taskLabel.visible = 
-		this.migrate.visible = false;
+		this.migrate.visible = 
+		this.build.visible = false;
 	}
 }
 
@@ -75,4 +82,12 @@ IslandMainPanel.prototype.onMigrate = function() {
 
 IslandMainPanel.prototype.onTask = function() {
 	scene.switchPanel( ConstructPanel ).select( this.island );
+}
+
+IslandMainPanel.prototype.onBuild = function() {
+	this.island.curTask = {
+		name: Buildings.FLOTILLA,
+		progress: 0
+	};
+	scene.switchPanel( IslandMainPanel ).select( this.island );
 }

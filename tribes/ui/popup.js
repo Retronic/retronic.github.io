@@ -22,8 +22,8 @@ PopUp.layout = function() {
 PopUp.prototype.layout = function() {
 	Panel.prototype.layout.call( this );
 
-	this.x = (game.width - this.width) / 2;
-	this.y = (game.height - this.height) / 2;
+	this.x = Math.floor( (game.width - this.width) / 2 );
+	this.y = Math.floor( (game.height - this.height) / 2 );
 }
 
 PopUp.prototype.hide = function() {

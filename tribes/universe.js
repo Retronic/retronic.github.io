@@ -35,6 +35,7 @@ Universe = new (function() {
 		var sizeNoise = new Phaser.Plugin.Perlin( rnd.between( 0, 255 ) );
 		var fertNoise = new Phaser.Plugin.Perlin( rnd.between( 0, 255 ) );
 		var minNoise = new Phaser.Plugin.Perlin( rnd.between( 0, 255 ) );
+		var clfNoise = new Phaser.Plugin.Perlin( rnd.between( 0, 255 ) );
 
 		// Candidates to become home islands
 		var homeIslands = [];
@@ -74,13 +75,19 @@ Universe = new (function() {
 			// Fertility
 			var fert = fertNoise.noiseHigh( x / Universe.SIZE * 2, y / Universe.SIZE * 2, 2, 1 ) + 1;
 			if (fert > 1.4) {
-				params.resource = Island.Resources.WHEAT;
+				params.resource = Island.Resources.GAME;
 			}
 
 			// Minerals
-			var min = (fertNoise.noiseHigh( x / Universe.SIZE * 2, y / Universe.SIZE * 2, 2, 1 ) + 1) * Math.random();
+			var min = (minNoise.noiseHigh( x / Universe.SIZE * 2, y / Universe.SIZE * 2, 2, 1 ) + 1) * Math.random();
 			if (min > 0.9) {
 				params.resource = Island.Resources.STONE;
+			}
+
+			// Minerals
+			var cliffs = (clfNoise.noiseHigh( x / Universe.SIZE * 2, y / Universe.SIZE * 2, 2, 1 ) + 1) * Math.random();
+			if (cliffs > 0.8) {
+				params.resource = Island.Resources.CLIFFS;
 			}
 
 			do {

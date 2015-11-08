@@ -20,7 +20,6 @@ function Tribe( params ) {
 	// Map of all fleets launched by this tribe
 	this.fleets = {};
 
-	this.gold = 1000;
 	this.tech = 1;
 	this.progress = 0;
 
@@ -105,6 +104,10 @@ Tribe.prototype.process = function() {
 }
 
 Tribe.prototype.launch = function( tribe, from, to, size, type ) {
+
+	from.ship = false;
+	from.onChanged.dispatch();
+
 	var fleet = new Fleet( this, from, to, size, type, Universe.time2sail( tribe, from, to ) );
 	this.fleets[fleet.id] = fleet;
 	from.population -= size;
@@ -150,6 +153,11 @@ Tribe.prototype.think = function() {
 					name		: Buildings.SHIPYARD,
 					progress	: 0
 				}
+			} else if (!island.ship) {
+				island.curTask = {
+					name		: Buildings.FLOTILLA,
+					progress	: 0
+				}
 			}
 		}
 	}
@@ -167,6 +175,7 @@ Tribe.prototype.addIsland = function( island, population ) {
 	if (!this.home) {
 		this.home = island;
 		this.home.buildings = [Buildings.OUTPOST, Buildings.SHIPYARD];
+		this.home.ship = true;
 	}
 
 	island.tribe = this;
@@ -226,8 +235,8 @@ Tribe.prototype.getViewDistance = function() {
 }
 
 Tribe.prototype.techUp = function() {
-	if (this.tech == 2 || this.tech == 4 || this.tech == 7) {
-		this.viewDistance += Math.sqrt( Universe.MIN_DISTANCE2 );
+	if (this.tech == 2 || this.tech == 4 || this.tech == 7 || this.tech == 11) {
+		this.viewDistance += 0.5 * Math.sqrt( Universe.MIN_DISTANCE2 );
 		this.updateIslandsVisibility();
 		return "Now you can sail further";
 	}

@@ -16,6 +16,7 @@ function Island( x, y, params ) {
 	this.buildings = [];
 
 	this.curTask = null;
+	this.ship = false;
 
 	this.onChanged = new Phaser.Signal();
 
@@ -29,7 +30,7 @@ Island.MIN_SIZE = 20;
 Island.MAX_SIZE = 120;
 
 Island.Resources = {
-	WHEAT	: "wheat",		// Faster growth
+	GAME	: "game",		// Faster growth
 	STONE	: "stone",		// Faster construction
 	CLIFFS 	: "cliffs",		// Stronger in defense
 	RUINS 	: "ruins",		// Large scince output
@@ -40,42 +41,50 @@ Island.MAP_SIZE	= 40;
 Island.BMP_SIZE	= 256;
 
 Island.prototype.grow = function() {
-
+	// If the island is uninhabited, it doesn't grow/change
 	if (this.tribe) {
-		this.tribe.gold += this.getEarnings();
-		this.tribe.progress += this.getScience();
-	}
-	
-	var changed = false;
+		var changed = false;
 
-	if (this.population && this.has( Buildings.OUTPOST )) {
-		var grow = this.population * 0.02 * Math.sqrt( 1 - this.population / this.size );
-		if (this.resource == Island.Resources.WHEAT) {
-			grow *= 1.5;
+		if (this.has( Buildings.OUTPOST )) {
+
+			var grow = 0.05 * this.population * Math.sqrt( 1 - this.population / this.size );
+			if (this.resource == Island.Resources.GAME) {
+				grow *= 1.5;
+			}
+			if (this.has( Buildings.STOREHOUSE )) {
+				grow *= 1.5;
+			}
+			var newPop = Math.min( this.population + grow, this.size );
+			if (newPop != this.population) {
+				this.population = newPop;
+				changed = true;
+			}
+
+			this.tribe.progress += this.getScience();
 		}
-		var newPop = Math.min( this.population + grow, this.size );
-		if (newPop != this.population) {
-			this.population = newPop;
+
+		if (this.curTask) {
+			this.curTask.progress += this.getProduction();
+			if (this.curTask.progress >= Buildings[this.curTask.name].cost) {
+				if (this.tribe == Universe.player) {
+					gamelog.message( 1, this.name + ' has completed ' + this.curTask.name, function() {
+						scene.switchPanel( IslandMainPanel ).select( this );
+					}, this );
+				}
+				if (this.curTask.name == Buildings.FLOTILLA) {
+					this.ship = true;
+					this.onChanged.dispatch();
+				} else {
+					this.buildings.push( this.curTask.name );
+				}
+				this.curTask = null;
+			}
 			changed = true;
 		}
-	}
 
-	if (this.curTask) {
-		this.curTask.progress += this.getProduction();
-		if (this.curTask.progress >= Buildings[this.curTask.name].cost) {
-			if (this.tribe == Universe.player) {
-				gamelog.message( 1, this.name + ' has completed ' + this.curTask.name, function() {
-					scene.switchPanel( IslandMainPanel ).select( this );
-				}, this );
-			}
-			this.buildings.push( this.curTask.name );
-			this.curTask = null;
+		if (changed) {
+			this.onChanged.dispatch();
 		}
-		changed = true;
-	}
-
-	if (changed) {
-		this.onChanged.dispatch();
 	}
 }
 
@@ -191,20 +200,15 @@ Island.prototype.has = function( building ) {
 }
 
 Island.prototype.canLaunch = function() {
-	return this.population >= 2 && this.has( Buildings.SHIPYARD ) && !this.launched;
+	return this.population >= 2 && this.ship;
 }
 
 Island.prototype.getProduction = function() {
 	var prod = Math.floor( this.population );
 	if (this.resource == Island.Resources.STONE) {
-		prod *= 0.5;
+		prod *= 1.5;
 	}
 	return prod;
-}
-
-Island.prototype.getEarnings = function() {
-	var earnings = Math.floor( this.population );
-	return earnings;
 }
 
 Island.prototype.getScience = function() {

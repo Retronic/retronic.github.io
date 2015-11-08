@@ -13,6 +13,9 @@ function AssaultPopUp( game, fleet ) {
 		warrior.scale.x = -1;
 	}
 
+	this.name.text = fleet.to.name;
+	this.name.tint = fleet.to.tribe.color;
+
 	game.time.events.add( Phaser.Timer.QUARTER, this.killOne, this );
 
 	this.resize( this.beach.width + Panel.LINE*2, this.beach.height + Panel.LINE*2 );
@@ -30,6 +33,9 @@ AssaultPopUp.prototype.createChildren = function() {
 
 	this.attackers = game.add.group( this );
 	this.defenders = game.add.group( this );
+
+	this.name = game.add.bitmapText( 0, 0, "font12", "", 12, this );
+	this.name.smoothed = false;
 }
 
 AssaultPopUp.prototype.layout = function() {
@@ -57,6 +63,9 @@ AssaultPopUp.prototype.layout = function() {
 
 	this.attackers.sort( 'y', Phaser.Group.SORT_ASCENDING );
 	this.defenders.sort( 'y', Phaser.Group.SORT_ASCENDING );
+
+	this.name.x = Math.floor( (this.reqWidth - this.name.width) / 2 );
+	this.name.y = Panel.LINE * 2;
 }
 
 AssaultPopUp.prototype.killOne = function() {
@@ -124,8 +133,20 @@ AssaultPopUp.prototype.assaultOver = function( attackersWin ) {
 
 AssaultPopUp.attack = function( fleet ) {
 	// REFACTOR ME
-	//     attack          defense            
-	return Math.random() > Math.random() * (fleet.to.has( Buildings.OUTPOST ) ? 2 : 1);
+	//     attack          defense        
+	var a = Math.random();
+	var b = Math.random();
+	if (fleet.to.resource == Island.Resources.CLIFFS) {
+		b *= 2;
+	}
+	if (fleet.to.has( Buildings.CASTLE )) {
+		b *= 5;
+	} else if (fleet.to.has( Buildings.WALLS )) {
+		b *= 3;
+	} else if (fleet.to.has( Buildings.OUTPOST )) {
+		b *= 1.5;
+	}
+	return a > b;
 }
 
 AssaultPopUp.resolve = function( fleet ) {
