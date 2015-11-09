@@ -37,8 +37,10 @@ Island.Resources = {
 	TIMBER	: "timber"		// Faster shipbuilding
 }
 
-Island.MAP_SIZE	= 40;
+Island.MAP_SIZE	= 8;
 Island.BMP_SIZE	= 256;
+
+Island.shard = null;
 
 Island.prototype.grow = function() {
 	// If the island is uninhabited, it doesn't grow/change
@@ -101,16 +103,20 @@ Island.prototype.buildMap = function() {
 
 	var MS = Island.MAP_SIZE - 2;
 
+	var square = 0;
+	var limit = MS * MS / 4 * this.size / Island.MAX_SIZE;
+
 	var c = Math.floor( Island.MAP_SIZE / 2 );
 	this.map[c][c] = 1;
 	for (var i=0; i < this.size / Island.MIN_SIZE; i++) {
 		var x = Math.floor(Island.gauss() * MS) + 1;
 		var y = Math.floor(Island.gauss() * MS) + 1;
 		this.map[y][x] = 1;
+
+		square++;
 	}
 
-	var square = 0;
-	var limit = MS * MS / 4 * this.size / Island.MAX_SIZE;
+	
 	do {
 		var x = Math.floor(Island.gauss() * MS) + 1;
 		var y = Math.floor(Island.gauss() * MS) + 1;
@@ -153,6 +159,13 @@ Island.prototype.buildMap = function() {
 	this.land = game.add.renderTexture( Island.BMP_SIZE, Island.BMP_SIZE );
 	this.shore = game.add.renderTexture( Island.BMP_SIZE, Island.BMP_SIZE );
 
+	if (!Island.shard) {
+		Island.shard = new Phaser.Image( game, 0, 0, 'shard' );
+		Island.shard.smoothed = false;
+		Island.shard.anchor.set( 0.5, 0.5 );
+		Island.shard.pivot.set( 0.5, 0.5 );
+	}
+
 	var image = new Phaser.Image( game, 0, 0, bmp );
 	image.smoothed = false;
 	image.anchor.set( 0.5, 0.5 );
@@ -162,9 +175,30 @@ Island.prototype.buildMap = function() {
 	var zoom = Island.BMP_SIZE / Island.MAP_SIZE / Math.SQRT2
 	image.scale.set( zoom, zoom );
 	image.updateTransform();
-	this.land.render( image );
+//	this.land.render( image );
+	for (var i=0; i < Island.MAP_SIZE; i++) {
+		for (var j=0; j < Island.MAP_SIZE; j++) {
+			if (this.map[i][j]) {
 
-	image.x -= zoom;
+				Island.shard.angle = Math.random() * 360;
+				Island.shard.frame = Math.floor( Math.random() * 2 );
+
+				Island.shard.x = j / Island.MAP_SIZE * Island.BMP_SIZE;
+				Island.shard.y = i / Island.MAP_SIZE * Island.BMP_SIZE;
+				var zoom = 2 * Island.BMP_SIZE / (Island.shard.texture.height * Island.MAP_SIZE) * Math.SQRT2;//Island.BMP_SIZE / Island.MAP_SIZE / Math.SQRT2
+				Island.shard.scale.set( zoom, zoom );
+				Island.shard.updateTransform();
+				this.land.render( Island.shard );
+
+				zoom *= 2;
+				Island.shard.scale.set( zoom, zoom );
+				Island.shard.updateTransform();
+				this.shore.render( Island.shard );
+			}
+		}
+	}
+
+/*	image.x -= zoom;
 	image.updateTransform();
 	this.shore.render( image );
 	image.x += 2*zoom;
@@ -176,7 +210,7 @@ Island.prototype.buildMap = function() {
 	this.shore.render( image );
 	image.y += 2*zoom;
 	image.updateTransform();
-	this.shore.render( image );
+	this.shore.render( image );*/
 }
 
 Island.prototype.colonize = function( tribe, size ) {

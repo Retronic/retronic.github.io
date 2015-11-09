@@ -85,7 +85,7 @@ IslandView.prototype.setZoom = function( value ) {
 }
 
 IslandView.prototype.updateSize = function() {
-	var size = 2 * this._zoom * Island.MAP_SIZE / Island.BMP_SIZE;
+	var size = 50/*~MIN_DISTANCE*/ * this._zoom / Island.BMP_SIZE;
 	this.button.scale.set( size, size );
 	this.shore.scale.set( size, size );
 }

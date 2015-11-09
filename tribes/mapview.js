@@ -105,7 +105,7 @@ MapView.prototype.select = function( object ) {
 	if (object instanceof Island) {
 		var island = this.islands[object.id];
 		this.graphics.lineStyle( 4, 0xFFFFFF, 0.3 );
-		this.graphics.drawCircle( island.x, island.y, Island.MAP_SIZE * 2 * this.zoom );
+		this.graphics.drawCircle( island.x, island.y, 50/*~MIN_DISTANCE*/ * this.zoom );
 	} else if (object instanceof Fleet && object.tribe == Universe.player) {
 		this.line.draw( object.view, object.to.view );
 	}

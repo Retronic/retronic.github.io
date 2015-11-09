@@ -1,7 +1,10 @@
 * Generation
+	* Replaces "resources" with "biomes"
+	* Use a single perlin noise map for choosing a biome
 	* Nicer island shapes
+	* Fewer islands?
+	* Use 
 * Gameplay
-	* To migrate there should be a ship built on an island
 	* Meaningful buildings for improving defense, production, growth, science output etc.
 		* Forge (Outpost) - increases production for both buildings and ships
 		* Workshop (Walls) - upgrades ships with siege weapons
@@ -11,6 +14,7 @@
 		* Market (Castle) - ???
 	* Tech based upgrades for warriors
 	* Building based upgrades for ships
+	* Technology plan
 	* Smarter AI
 * Refactoring
 * UI
