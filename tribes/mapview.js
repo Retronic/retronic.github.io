@@ -105,7 +105,7 @@ MapView.prototype.select = function( object ) {
 	if (object instanceof Island) {
 		var island = this.islands[object.id];
 		this.graphics.lineStyle( 4, 0xFFFFFF, 0.3 );
-		this.graphics.drawCircle( island.x, island.y, 50/*~MIN_DISTANCE*/ * this.zoom );
+		this.graphics.drawCircle( island.x, island.y, Math.sqrt( Universe.MIN_DISTANCE2 ) * this.zoom );
 	} else if (object instanceof Fleet && object.tribe == Universe.player) {
 		this.line.draw( object.view, object.to.view );
 	}
@@ -119,15 +119,15 @@ MapView.prototype.link = function( island1, island2 ) {
 	this.graphics.lineStyle( 4, 0xFFFFFF, 0.3 );
 	this.line.visible = false;
 
-	var r = Island.MAP_SIZE * this.zoom / 1.4;
+	var r = Math.sqrt( Universe.MIN_DISTANCE2 ) * this.zoom / Math.SQRT2;
 
 	if (island1) {
 		var isl1 = this.islands[island1.id];
-		this.graphics.drawCircle( isl1.x, isl1.y, r*2 );
+		this.graphics.drawCircle( isl1.x, isl1.y, r );
 	}
 	if (island2) {
 		var isl2 = this.islands[island2.id];
-		this.graphics.drawCircle( isl2.x, isl2.y, r*2 );
+		this.graphics.drawCircle( isl2.x, isl2.y, r );
 	}
 	if (island1 && island2) {
 		this.line.draw( isl1, isl2, r + 2 );

@@ -1,9 +1,8 @@
 * Generation
 	* Replaces "resources" with "biomes"
 	* Use a single perlin noise map for choosing a biome
-	* Nicer island shapes
 	* Fewer islands?
-	* Use 
+	* Use "graphs" for building the archipelago
 * Gameplay
 	* Meaningful buildings for improving defense, production, growth, science output etc.
 		* Forge (Outpost) - increases production for both buildings and ships

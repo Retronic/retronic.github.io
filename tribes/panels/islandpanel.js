@@ -22,6 +22,8 @@ IslandPanel.prototype.createChildren = function() {
 	this.ocean = game.add.tileSprite( 0, 0, 100, 100, 'ocean', null, this );
 	this.ocean.autoScroll( 8, 2 );
 
+	this.image = game.add.group( this );
+
 	this.name = new TextView( game, '', 'font12', 12, 'center' );
 	this.name.y = Panel.MARGIN;
 	this.add( this.name );
@@ -51,18 +53,16 @@ IslandPanel.prototype.layout = function() {
 
 	this.ocean.x = Panel.MARGIN + Panel.LINE;
 	this.ocean.y = p + Panel.LINE;
-	this.ocean.width = m - Panel.LINE*2;
-	this.ocean.height = m - Panel.LINE*2;
+	this.ocean.width =
+	this.ocean.height = 
+		m - Panel.LINE*2;
 
-	if (this.land) {
-		this.land.x = this.shore.x = this.reqWidth / 2;
-		this.land.y = this.shore.y = p + m/2;
-		this.land.scale.setTo( m / Island.BMP_SIZE, m / Island.BMP_SIZE );
-		this.shore.scale.setTo( m / Island.BMP_SIZE, m / Island.BMP_SIZE );
+	this.image.x = this.reqWidth / 2;
+	this.image.y = p + m/2;
+	this.image.scale.setTo( this.ocean.width / Island.BMP_SIZE, this.ocean.height / Island.BMP_SIZE );
 
-		this.flotilla.x = this.land.x + m / 4;
-		this.flotilla.y = this.land.y + m / 4;
-	}
+	this.flotilla.x = this.image.x + m / 4;
+	this.flotilla.y = this.image.y + m / 4;
 
 	this.info.x = this.reqWidth - this.info.textWidth - Panel.MARGIN - Panel.LINE*2;
 	this.info.y = p + m - Panel.LINE*2 - this.info.textHeight;
@@ -87,8 +87,7 @@ IslandPanel.prototype.select = function( island, refresh ) {
 
 	if (this.island) {
 		this.island.onChanged.remove( this.onIslandChanged, this );
-		this.remove( this.land );
-		this.remove( this.shore );
+		this.image.removeAll();
 	}
 
 	this.island = island;
@@ -106,15 +105,17 @@ IslandPanel.prototype.select = function( island, refresh ) {
 
 	this.buildingsList.text = island.buildings.join( '\n' );
 
-	this.shore = game.add.image( 0, 0, this.island.shore, null, this );
+	this.shore = game.add.image( 0, 0, this.island.shore, null, this.image );
 	this.shore.anchor.setTo( 0.5, 0.5 );
 	this.shore.pivot.setTo( 0.5, 0.5 );
 	this.shore.tint = this.island.view.shore.tint;
 
-	this.land = game.add.image( 0, 0, this.island.land, null, this );
+	this.land = game.add.image( 0, 0, this.island.land, null, this.image );
 	this.land.anchor.setTo( 0.5, 0.5 );
 	this.land.pivot.setTo( 0.5, 0.5 );
 	this.land.tint = this.island.view.button.tint;
+
+	this.image.rotation = island.rotation;
 
 	this.flotilla.visible = island.tribe == Universe.player && island.ship;
 	if (island.tribe) {

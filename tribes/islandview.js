@@ -28,6 +28,8 @@ function IslandView( game, island ) {
 	this.button.tint = 0x558844;
 	this.addChild( this.button );
 
+	this.shore.rotation = this.button.rotation =island.rotation;
+
 	switch (island.resource) {
 	case Island.Resources.GAME:
 		this.button.tint = 0x225533;
@@ -85,7 +87,7 @@ IslandView.prototype.setZoom = function( value ) {
 }
 
 IslandView.prototype.updateSize = function() {
-	var size = 50/*~MIN_DISTANCE*/ * this._zoom / Island.BMP_SIZE;
+	var size = this._zoom * Math.sqrt( Universe.MIN_DISTANCE2 ) / Island.BMP_SIZE;
 	this.button.scale.set( size, size );
 	this.shore.scale.set( size, size );
 }
