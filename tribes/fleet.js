@@ -1,4 +1,4 @@
-function Fleet( tribe, from, to, size, type, duration ) {
+function Fleet( tribe, from, to, size, duration ) {
 
 	this.id = Universe.id();
 
@@ -6,7 +6,6 @@ function Fleet( tribe, from, to, size, type, duration ) {
 	this.from = from;
 	this.to = to;
 	this.size = size;
-	this.type = type;
 	this.duration = duration;
 	this.progress = 0;
 
@@ -17,10 +16,6 @@ function Fleet( tribe, from, to, size, type, duration ) {
 
 	this.onChanged = new Phaser.Signal();
 }
-
-Fleet.TRANSPORT	= 'transport';
-Fleet.NAVAL		= 'naval';
-Fleet.SETTLER	= 'settler';
 
 Fleet.prototype.advance = function() {
 

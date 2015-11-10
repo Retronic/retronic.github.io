@@ -59,7 +59,8 @@ IslandPanel.prototype.layout = function() {
 
 	this.image.x = this.reqWidth / 2;
 	this.image.y = p + m/2;
-	this.image.scale.setTo( this.ocean.width / Island.BMP_SIZE, this.ocean.height / Island.BMP_SIZE );
+	var zoom = this.ocean.width / Island.BMP_SIZE / Math.SQRT2;
+	this.image.scale.setTo( zoom, zoom );
 
 	this.flotilla.x = this.image.x + m / 4;
 	this.flotilla.y = this.image.y + m / 4;

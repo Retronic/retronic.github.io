@@ -67,7 +67,14 @@ Island.prototype.grow = function() {
 		}
 
 		if (this.curTask) {
-			this.curTask.progress += this.getProduction();
+			var prod = this.getProduction();
+			if (this.curTask.name == Buildings.FLOTILLA && this.resource == Island.Resources.TIMBER) {
+				prod *= 1.5;
+			}
+			if (this.curTask.name != Buildings.FLOTILLA && this.resource == Island.Resources.STONE) {
+				prod *= 1.5;
+			}
+			this.curTask.progress += prod;
 			if (this.curTask.progress >= Buildings[this.curTask.name].cost) {
 				if (this.tribe == Universe.player) {
 					gamelog.message( 1, this.name + ' has completed ' + this.curTask.name, function() {
@@ -175,13 +182,16 @@ Island.prototype.buildMap = function() {
 				Island.shard.angle = Math.random() * 360;
 				Island.shard.frame = Math.floor( Math.random() * nFrames );
 
+				var z = (Math.random() * 0.4 + 0.8) * zoom;
+
 				Island.shard.x = j / Island.MAP_SIZE * Island.BMP_SIZE;
 				Island.shard.y = i / Island.MAP_SIZE * Island.BMP_SIZE;
-				Island.shard.scale.set( zoom, zoom );
+				Island.shard.scale.set( z, z );
 				Island.shard.updateTransform();
 				this.land.render( Island.shard );
 
-				Island.shard.scale.set( zoom * 2, zoom * 2 );
+				z *= 1.6;
+				Island.shard.scale.set( z, z );
 				Island.shard.updateTransform();
 				this.shore.render( Island.shard );
 			}
@@ -217,7 +227,7 @@ Island.prototype.canLaunch = function() {
 
 Island.prototype.getProduction = function() {
 	var prod = Math.floor( this.population );
-	if (this.resource == Island.Resources.STONE) {
+	if (this.has( Buildings.FORGE )) {
 		prod *= 1.5;
 	}
 	return prod;

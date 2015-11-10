@@ -33,9 +33,7 @@ Universe = new (function() {
 
 		var landNoise = new Phaser.Plugin.Perlin( rnd.between( 0, 255 ) );
 		var sizeNoise = new Phaser.Plugin.Perlin( rnd.between( 0, 255 ) );
-		var fertNoise = new Phaser.Plugin.Perlin( rnd.between( 0, 255 ) );
-		var minNoise = new Phaser.Plugin.Perlin( rnd.between( 0, 255 ) );
-		var clfNoise = new Phaser.Plugin.Perlin( rnd.between( 0, 255 ) );
+		var biomNoise = new Phaser.Plugin.Perlin( rnd.between( 0, 255 ) );
 
 		// Candidates to become home islands
 		var homeIslands = [];
@@ -72,22 +70,18 @@ Universe = new (function() {
 			var size = (sizeNoise.noiseHigh( x / Universe.SIZE * 2, y / Universe.SIZE * 2, 2, 1 ) + 1) / 2 * Math.random();
 			params.size = Island.MIN_SIZE + (Island.MAX_SIZE - Island.MIN_SIZE) * size; 
 
-			// Fertility
-			var fert = fertNoise.noiseHigh( x / Universe.SIZE * 2, y / Universe.SIZE * 2, 2, 1 ) + 1;
-			if (fert > 1.4) {
-				params.resource = Island.Resources.GAME;
-			}
-
-			// Minerals
-			var min = (minNoise.noiseHigh( x / Universe.SIZE * 2, y / Universe.SIZE * 2, 2, 1 ) + 1) * Math.random();
-			if (min > 0.9) {
-				params.resource = Island.Resources.STONE;
-			}
-
-			// Minerals
-			var cliffs = (clfNoise.noiseHigh( x / Universe.SIZE * 2, y / Universe.SIZE * 2, 2, 1 ) + 1) * Math.random();
-			if (cliffs > 0.8) {
-				params.resource = Island.Resources.CLIFFS;
+			// Biomes
+			var biome = biomNoise.noiseHigh( x / Universe.SIZE * 2, y / Universe.SIZE * 2, 2, 1 ) + 1;
+			if (biome < 0.6) {
+				params.resource = Island.Resources.GAME;	// [0..0.6]
+			} else if (biome < 0.8) {
+				params.resource = Island.Resources.TIMBER;	// [0.6..0.8]
+			} else if (biome < 1.4) {
+				params.resource = null;						// [0.8..1.4]
+			} else if (biome < 1.6) {
+				params.resource = Island.Resources.CLIFFS;	// [1.4..1.6]
+			} else {
+				params.resource = Island.Resources.STONE;	// [1.6..2]
 			}
 
 			do {
@@ -210,7 +204,7 @@ Universe = new (function() {
 	this.time2sail = function( tribe, from, to ) {
 		var dx = to.x - from.x;
 		var dy = to.y - from.y;
-		return Math.ceil( Math.sqrt( this.distance2( from, to ) / Universe.MIN_DISTANCE2 ) );
+		return Math.ceil( this.distance( from, to ) / tribe.sailSpeed );
 	};
 
 	this.distance = function( a, b ) {

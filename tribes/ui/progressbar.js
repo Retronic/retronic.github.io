@@ -26,6 +26,7 @@ ProgressBar.prototype.createChildren = function() {
 	this.swap( this.fill, this._label );
 
 	this.percent = game.add.bitmapText( 0, 0, "font12", "", 12, this );
+	this.percent.smoothed = false;
 }
 
 ProgressBar.prototype.layout = function() {
@@ -41,7 +42,7 @@ ProgressBar.prototype.layout = function() {
 
 		this._label.x = Panel.LINE * 2;
 		this.percent.x = this.reqWidth - Panel.LINE*2 - this.percent.textWidth;
-		this.percent.y = (this.reqHeight - this.percent.textHeight) / 2;
+		this.percent.y = Math.floor( (this.reqHeight - this.percent.textHeight) / 2 );
 
 		this.fill.width = (this.reqWidth - Panel.LINE*2) * (this._value / this._maxValue);
 		this.fill.height = this.reqHeight - Panel.LINE*2;

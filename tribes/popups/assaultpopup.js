@@ -4,12 +4,12 @@ function AssaultPopUp( game, fleet ) {
 	this.fleet = fleet;
 
 	for (var i=0; i < fleet.size; i++) {
-		var warrior = game.add.image( 0, 0, 'warrior', fleet.tribe.flag, this.attackers );
+		var warrior = game.add.image( 0, 0, 'warrior', fleet.tribe.attackLevel * 4 + fleet.tribe.flag, this.attackers );
 		warrior.smoothed = false;
 	}
 
 	for (var i=0; i < fleet.to.population; i++) {
-		var warrior = game.add.image( 0, 0, 'warrior', fleet.to.tribe.flag, this.defenders );
+		var warrior = game.add.image( 0, 0, 'warrior', fleet.to.tribe.attackLevel * 4 + fleet.to.tribe.flag, this.defenders );
 		warrior.scale.x = -1;
 	}
 
@@ -125,7 +125,7 @@ AssaultPopUp.prototype.assaultOver = function( attackersWin ) {
 
 	// Hiding the window and selecting the island on the map
 	this.hide();
-	scene.switchPanel( IslandMainPanel ).select( island );
+//	scene.switchPanel( IslandMainPanel ).select( island );
 
 	// We can now proceed with the rest of the actions of the current tribe
 	Universe.curTribe.state = Tribe.State.NOT_PROCESSED;
@@ -134,8 +134,8 @@ AssaultPopUp.prototype.assaultOver = function( attackersWin ) {
 AssaultPopUp.attack = function( fleet ) {
 	// REFACTOR ME
 	//     attack          defense        
-	var a = Math.random();
-	var b = Math.random();
+	var a = Math.random() * fleet.tribe.attack;
+	var b = Math.random() * fleet.to.tribe.attack;
 	if (fleet.to.resource == Island.Resources.CLIFFS) {
 		b *= 2;
 	}

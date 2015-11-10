@@ -119,7 +119,7 @@ MapView.prototype.link = function( island1, island2 ) {
 	this.graphics.lineStyle( 4, 0xFFFFFF, 0.3 );
 	this.line.visible = false;
 
-	var r = Math.sqrt( Universe.MIN_DISTANCE2 ) * this.zoom / Math.SQRT2;
+	var r = Math.sqrt( Universe.MIN_DISTANCE2 ) * this.zoom;
 
 	if (island1) {
 		var isl1 = this.islands[island1.id];
@@ -130,7 +130,7 @@ MapView.prototype.link = function( island1, island2 ) {
 		this.graphics.drawCircle( isl2.x, isl2.y, r );
 	}
 	if (island1 && island2) {
-		this.line.draw( isl1, isl2, r + 2 );
+		this.line.draw( isl1, isl2, r/2 + 2 );
 	}
 }
 

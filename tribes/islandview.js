@@ -19,26 +19,32 @@ function IslandView( game, island ) {
 	this.shore = game.add.image( 0, 0, island.shore, null, this );
 	this.shore.anchor.set( 0.5, 0.5 );
 	this.shore.pivot.set( 0.5, 0.5 );
-	this.shore.tint = 0x094f66;
+	this.shore.tint = 0xAAAA88;
 
 	this.button = new Phaser.Button( game, 0, 0, island.land, this.onButtonClick, this );
 	this.button.smoothed = false;
 	this.button.anchor.set( 0.5, 0.5 );
 	this.button.pivot.set( 0.5, 0.5 );
-	this.button.tint = 0x558844;
+	this.button.tint = 0x448844;
 	this.addChild( this.button );
 
-	this.shore.rotation = this.button.rotation =island.rotation;
+	this.shore.rotation = 
+	this.button.rotation =
+		island.rotation;
 
 	switch (island.resource) {
 	case Island.Resources.GAME:
 		this.button.tint = 0x225533;
 		break;
+	case Island.Resources.TIMBER:
+		this.button.tint = 0x777733;
+		break;
 	case Island.Resources.STONE:
-		this.button.tint = 0x888877;
+		this.button.tint = 0x777766;
 		break;
 	case Island.Resources.CLIFFS:
-		this.shore.tint = 0xBBBBAA;
+		this.shore.tint = 0xEEEEDD;
+		this.button.tint = 0x669966;
 		break;
 	}
 

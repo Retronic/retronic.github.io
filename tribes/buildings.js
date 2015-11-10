@@ -5,6 +5,8 @@ Buildings.SHIPYARD	= "shipyard";
 Buildings.WALLS		= "walls";
 Buildings.CASTLE	= "castle";
 Buildings.STOREHOUSE= "storehouse";
+Buildings.FORGE		= "forge";
+
 Buildings.SHRINE	= "shrine";
 Buildings.MARKET	= "marketplace";
 
@@ -12,7 +14,7 @@ Buildings.FLOTILLA	= "flotilla";
 
 // Forge Workshop Longhouse Fort Trading post
 
-Buildings.ALL = [Buildings.OUTPOST, Buildings.SHIPYARD, Buildings.WALLS, Buildings.CASTLE, Buildings.STOREHOUSE, Buildings.SHRINE, Buildings.MARKET];
+Buildings.ALL = [Buildings.OUTPOST, Buildings.SHIPYARD, Buildings.WALLS, Buildings.CASTLE, Buildings.STOREHOUSE, Buildings.FORGE];
 
 Buildings[Buildings.OUTPOST] = {
 	cost	: 200,
@@ -36,6 +38,11 @@ Buildings[Buildings.CASTLE] = {
 
 Buildings[Buildings.STOREHOUSE] = {
 	cost	: 400,
+	reqs	: [Buildings.OUTPOST]
+};
+
+Buildings[Buildings.FORGE] = {
+	cost	: 500,
 	reqs	: [Buildings.OUTPOST]
 };
 

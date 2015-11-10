@@ -22,11 +22,16 @@ function Tribe( params ) {
 
 	this.tech = 1;
 	this.progress = 0;
+	this.techPlan = new Tech();
 
 	this.state = Tribe.State.NOT_PROCESSED;
 	this.assaulting = [];
 
 	this.viewDistance = Math.sqrt( Universe.MIN_DISTANCE2 ) * 3;
+	this.sailSpeed = Math.sqrt( Universe.MIN_DISTANCE2 );
+	this.attack = 1;
+
+	this.attackLevel = 0;
 }
 
 Tribe.NORSE	= function() { return new Tribe( {name: 'Norse', flag: 0, color: 0xff4040} ) };
@@ -51,8 +56,8 @@ Tribe.prototype.grow = function() {
 
 	var techUp = false;
 	var upgrades = [];
-	while (this.progress >= this.tech * 100) {
-		this.progress -= this.tech * 100;
+	while (this.progress >= this.tech * 200) {
+		this.progress -= this.tech * 200;
 		this.tech++;
 		var upgrade = this.techUp();
 		if (upgrade) {
@@ -103,12 +108,12 @@ Tribe.prototype.process = function() {
 	}
 }
 
-Tribe.prototype.launch = function( tribe, from, to, size, type ) {
+Tribe.prototype.launch = function( tribe, from, to, size ) {
 
 	from.ship = false;
 	from.onChanged.dispatch();
 
-	var fleet = new Fleet( this, from, to, size, type, Universe.time2sail( tribe, from, to ) );
+	var fleet = new Fleet( this, from, to, size, Universe.time2sail( tribe, from, to ) );
 	this.fleets[fleet.id] = fleet;
 	from.population -= size;
 	from.launched = true;
@@ -235,9 +240,22 @@ Tribe.prototype.getViewDistance = function() {
 }
 
 Tribe.prototype.techUp = function() {
-	if (this.tech == 2 || this.tech == 4 || this.tech == 7 || this.tech == 11) {
+	var up = this.techPlan.plan[this.tech - 2];
+	switch (up) {
+	case Tech.RANGE_UP:
 		this.viewDistance += 0.5 * Math.sqrt( Universe.MIN_DISTANCE2 );
 		this.updateIslandsVisibility();
 		return "Now you can sail further";
+	case Tech.SPEED_UP:
+		this.sailSpeed += 0.333 * Math.sqrt( Universe.MIN_DISTANCE2 );
+		return "Now you can sail faster";
+	case Tech.ATTACK_UP:
+		this.attack += 0.333;
+		this.attackLevel++;
+		return "Your warriors are now stronger in combat";
+	case null:
+		return
+	default:
+		return up[0].toUpperCase() + up.substr( 1 ) + " is now available to you";
 	}
 }
