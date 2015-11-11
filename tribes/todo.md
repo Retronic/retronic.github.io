@@ -9,9 +9,7 @@
 		* Temple (Shrine, Castle) - increases science output
 		* Monument (Outpost) - increases science output
 		* Market (Castle) - ???
-	* Tech based upgrades for warriors
 	* Building based upgrades for ships
-	* Technology plan
 	* Smarter AI
 	* Flotilla auto-construction on island without a task set
 * Refactoring
@@ -22,3 +20,4 @@
 	* Fullscreen (no address line on mobile)
 	* Images of outpost, walls etc on the assault popup
 * Bugfixing
+	* Fleet icons are not removed

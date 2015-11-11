@@ -45,11 +45,12 @@ ConstructPanel.prototype.select = function( island, refresh ) {
 
 	IslandPanel.prototype.select.call( this, island, refresh );
 
-	this.buildings.removeAll( true );
-
-	if (!this.island.buildings) {
+	if (island.tribe != Universe.player) {
+		this.onCancel();
 		return;
 	}
+
+	this.buildings.removeAll( true );
 
 	for (var b in Buildings.ALL) {
 		var name = Buildings.ALL[b];
@@ -66,6 +67,11 @@ ConstructPanel.prototype.select = function( island, refresh ) {
 				}
 			}
 
+			var techReq = island.tribe.techPlan.plan.indexOf( name );
+			if (techReq != -1 && techReq+2 > island.tribe.tech) {
+				canConstruct = false;
+			}
+
 			if (canConstruct) {
 				var cap = name[0].toUpperCase() + name.substr( 1 );
 				var btn = new ProgressBar( game, cap, this.onBuilding, this );
@@ -74,6 +80,7 @@ ConstructPanel.prototype.select = function( island, refresh ) {
 					btn.value = island.curTask.progress;
 				}
 				btn.name = name;
+				btn.tooltip = Buildings[name].info;
 				this.buildings.add( btn );
 			}
 		}

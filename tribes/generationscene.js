@@ -29,7 +29,7 @@ GenerationScene.prototype.init = function () {
 }
 
 GenerationScene.prototype.step = function () {
-	if (Universe.build( {nIslands: 30, tribes: Tribe.ALL()} )) {
+	if (Universe.build( {nIslands: 24, tribes: Tribe.ALL()} )) {
 		switchScene( GameScene );
 	}
 }

@@ -34,9 +34,8 @@ IslandPanel.prototype.createChildren = function() {
 
 	this.info = game.add.bitmapText( 0, 0, "font8", "", 8, this );
 	this.info.smoothed = false;
-	this.info.align = 'right';
 
-	this.buildingsList = game.add.bitmapText( 0, 0, "font8", "", 8, this );
+	this.buildingsList = [];
 }
 
 IslandPanel.prototype.layout = function() {
@@ -67,9 +66,17 @@ IslandPanel.prototype.layout = function() {
 
 	this.info.x = this.reqWidth - this.info.textWidth - Panel.MARGIN - Panel.LINE*2;
 	this.info.y = p + m - Panel.LINE*2 - this.info.textHeight;
+	this.info.inputEnabled = true;
+	this.info.events.onInputOver.add( this.showBiomeTooltip, this );
+	this.info.events.onInputOut.add( Tooltip.hide );
 
-	this.buildingsList.x = Panel.MARGIN + Panel.LINE*2;
-	this.buildingsList.y = p + Panel.LINE*2;
+	var pos = p + Panel.LINE*2;
+	for (var i in this.buildingsList) {
+		var item = this.buildingsList[i];
+		item.x = Panel.MARGIN + Panel.LINE*2;
+		item.y = pos;
+		pos += item.height;
+	}
 }
 
 IslandPanel.prototype.mapClicked = function( object ) {
@@ -104,7 +111,21 @@ IslandPanel.prototype.select = function( island, refresh ) {
 
 	this.info.text = island.resource ? island.resource : "";
 
-	this.buildingsList.text = island.buildings.join( '\n' );
+	for (var i in this.buildingsList) {
+		this.remove( this.buildingsList[i] );
+	}
+	this.buildingsList = [];
+	for (var i in island.buildings) {
+		var building = island.buildings[i];
+		var item = game.add.bitmapText( 0, 0, 'font8', building, 8, this );
+		item.inputEnabled = true;
+		item.events.onInputOver.add( this.showBuildingTooltip, {
+			text	: Buildings[building].info, 
+			title	: building[0].toUpperCase() + building.substr( 1 )
+		} );
+		item.events.onInputOut.add( Tooltip.hide );
+		this.buildingsList.push( item );
+	}
 
 	this.shore = game.add.image( 0, 0, this.island.shore, null, this.image );
 	this.shore.anchor.setTo( 0.5, 0.5 );
@@ -130,4 +151,25 @@ IslandPanel.prototype.select = function( island, refresh ) {
 
 IslandPanel.prototype.onIslandChanged = function() {
 	this.select( this.island, true );
+}
+
+IslandPanel.prototype.showBuildingTooltip = function() {
+	Tooltip.show( this.text, this.title );
+}
+
+IslandPanel.prototype.showBiomeTooltip = function() {
+	switch (this.island.resource) {
+	case Island.Resources.GAME:
+		Tooltip.show( "Game on this island provides boost the island growth", "Game" );
+		break;
+	case Island.Resources.TIMBER:
+		Tooltip.show( "Timber of this island allows faster ship building", "Timber" );
+		break;
+	case Island.Resources.CLIFFS:
+		Tooltip.show( "High cliffs of this island provide defense bonus", "Cliffs" );
+		break;
+	case Island.Resources.STONE:
+		Tooltip.show( "Stone of this island allows faster buildings construction", "Stone" );
+		break;
+	}
 }

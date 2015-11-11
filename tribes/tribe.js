@@ -89,11 +89,18 @@ Tribe.prototype.process = function() {
 
 	var assault = this.assaulting.shift();
 	if (assault) {
-		if (this == Universe.player || assault.to.tribe == Universe.player) {
-			var popup = PopUp.show( new AssaultPopUp( game, assault ) );
-		} else {
-			AssaultPopUp.resolve( assault );
+		if (assault.to.tribe == this) {
+			// The island was already captured on this turn
+			assault.arrive();
+			assault.dispatch();
 			assault = null;
+		} else {
+			if (this == Universe.player || assault.to.tribe == Universe.player) {
+				var popup = PopUp.show( new AssaultPopUp( game, assault ) );
+			} else {
+				AssaultPopUp.resolve( assault );
+				assault = null;
+			}
 		}
 	}
 
@@ -240,6 +247,11 @@ Tribe.prototype.getViewDistance = function() {
 }
 
 Tribe.prototype.techUp = function() {
+
+	if (this.tech - 2 >= this.techPlan.plan.length) {
+		return;
+	}
+
 	var up = this.techPlan.plan[this.tech - 2];
 	switch (up) {
 	case Tech.RANGE_UP:
@@ -254,7 +266,7 @@ Tribe.prototype.techUp = function() {
 		this.attackLevel++;
 		return "Your warriors are now stronger in combat";
 	case null:
-		return
+		return;
 	default:
 		return up[0].toUpperCase() + up.substr( 1 ) + " is now available to you";
 	}

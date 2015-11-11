@@ -18,32 +18,38 @@ Buildings.ALL = [Buildings.OUTPOST, Buildings.SHIPYARD, Buildings.WALLS, Buildin
 
 Buildings[Buildings.OUTPOST] = {
 	cost	: 200,
-	reqs	: []
+	reqs	: [],
+	info	: "Outpost is required to build\nanything else on an island"
 };
 
 Buildings[Buildings.SHIPYARD] = {
 	cost	: 400,
-	reqs	: [Buildings.OUTPOST]
+	reqs	: [Buildings.OUTPOST],
+	info	: "Shipyard enables ship\nconstruction on an island"
 };
 
 Buildings[Buildings.WALLS] = {
 	cost	: 400,
-	reqs	: [Buildings.OUTPOST]
+	reqs	: [Buildings.OUTPOST],
+	info	: "Walls provide additional\ndefense bonus"
 };
 
 Buildings[Buildings.CASTLE] = {
 	cost	: 800,
-	reqs	: [Buildings.WALLS]
+	reqs	: [Buildings.WALLS],
+	info	: "More defense!!!"
 };
 
 Buildings[Buildings.STOREHOUSE] = {
 	cost	: 400,
-	reqs	: [Buildings.OUTPOST]
+	reqs	: [Buildings.OUTPOST],
+	info	: "Storehouse increases\nan island growth rate"
 };
 
 Buildings[Buildings.FORGE] = {
 	cost	: 500,
-	reqs	: [Buildings.OUTPOST]
+	reqs	: [Buildings.OUTPOST],
+	info	: "Forge increases\nan island production"
 };
 
 Buildings[Buildings.SHRINE] = {
@@ -57,5 +63,6 @@ Buildings[Buildings.MARKET] = {
 };
 
 Buildings[Buildings.FLOTILLA] = {
-	cost	: 250
+	cost	: 250,
+	info	: ""
 };

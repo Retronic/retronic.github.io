@@ -111,7 +111,7 @@ IslandView.prototype.refresh = function() {
 		this.flag.visible = false;
 	}
 
-	if (island.tribe && island.ship) {
+	if (island.tribe == Universe.player && island.ship) {
 		this.flotilla.visible = true;
 		this.flotilla.frame = island.tribe.flag;
 	} else {

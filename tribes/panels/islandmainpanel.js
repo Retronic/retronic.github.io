@@ -60,13 +60,15 @@ IslandMainPanel.prototype.select = function( island, refresh ) {
 
 		if (island.curTask) {
 			var name = island.curTask.name;
-			name = name[0].toUpperCase() + name.substr( 1 );
-			this.construct.label = name;
-			this.construct.maxValue = Buildings[island.curTask.name].cost;
+			this.construct.label = name[0].toUpperCase() + name.substr( 1 );
+			this.construct.name = name;
 			this.construct.value = island.curTask.progress;
+			this.construct.maxValue = Buildings[name].cost;
+			this.construct.tooltip = Buildings[name].info;
 		} else {
 			this.construct.label = "None";
 			this.construct.value = NaN;
+			this.construct.tooltip = null;
 		}
 	} else {
 		this.construct.visible = 

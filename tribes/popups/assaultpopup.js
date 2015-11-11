@@ -177,6 +177,13 @@ AssaultPopUp.aftermath = function( fleet, success, survivors ) {
 		if (island.tribe == Universe.player || defenders == Universe.player) {
 			scene.map.updateFieldOfView( Universe.player );
 		}
+
+		if (!island.has( Buildings.OUTPOST )) {
+			island.curTask = {
+				name		: Buildings.OUTPOST, 
+				progress	: 0
+			};
+		}
 	} else {
 		// The attackers have lost. Adjusting the size of population of the island
 		island.population = survivors;

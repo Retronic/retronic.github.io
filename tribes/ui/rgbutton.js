@@ -12,6 +12,11 @@ function RGButton( game, label, handler, ths ) {
 	Object.defineProperty( this, 'label', {
 		set	: this.setLabel
 	} );
+
+	this._tooltipText = "";
+	Object.defineProperty( this, 'tooltip', {
+		set	: this.setTooltip
+	} );
 }
 
 RGButton.prototype = Object.create( View.prototype );
@@ -51,9 +56,26 @@ RGButton.prototype.layout = function() {
 RGButton.prototype.onButtonClick = function() {
 	game.add.audio( 'click' ).play();
 	this.onClick.dispatch( this );
+
+	Tooltip.hide();
 }
 
 RGButton.prototype.setLabel = function( value ) {
 	this._label.text = value;
 	this.layout();
+}
+
+RGButton.prototype.setTooltip = function( value ) {
+	this._tooltipText = value;
+	if (value) {
+		this.button.events.onInputOver.add( this.showTooltip, this );
+		this.button.events.onInputOut.add( Tooltip.hide );
+	} else {
+		this.button.events.onInputOver.remove( this.showTooltip, this );
+		this.button.events.onInputOut.remove( Tooltip.hide );
+	}
+}
+
+RGButton.prototype.showTooltip = function( value ) {
+	Tooltip.show( this._tooltipText, this.name ? this.name[0].toUpperCase() + this.name.substr( 1 ) : "" );
 }
