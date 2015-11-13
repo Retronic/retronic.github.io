@@ -123,7 +123,6 @@ Tribe.prototype.launch = function( tribe, from, to, size ) {
 	var fleet = new Fleet( this, from, to, size, Universe.time2sail( tribe, from, to ) );
 	this.fleets[fleet.id] = fleet;
 	from.population -= size;
-	from.launched = true;
 
 	scene.map.addFleet( fleet );
 
@@ -147,27 +146,54 @@ Tribe.prototype.think = function() {
 	}
 
 	if (ids1.length && ids2.length) {
-		var src = this.islands[ids1[Math.floor(Math.random() * ids1.length)]];
-		var dst = this.knownIslands[ids2[Math.floor(Math.random() * ids2.length)]];
-		this.launch( this, src, dst, 1 + Math.floor(Math.random() * src.population / 2), Fleet.SETTLER );
+
+		var weights = [];
+		for (var i=0; i < ids1.length; i++) {
+			weights.push( this.islands[ids1[i]].population );
+		}
+		var src = this.islands[ids1[weighted( weights )]]; 
+
+		weights = [];
+		for (var i=0; i < ids2.length; i++) {
+			var isl = this.knownIslands[ids2[i]];
+			var w = isl.size * isl.size;
+			if (isl.tribe != null) {
+				w *= src.population/2 / isl.population;
+				if (isl.has( Task.OUTPOST )) {
+					w /= 1.5;
+				}
+				if (isl.resource == Island.Resources.CLIFFS) {
+					w /= 1.5;
+				}
+			}
+			if (isl.resource) {
+				w *= 2;
+			}
+			w /= Universe.distance( src, isl );
+			weights.push( w );
+		}
+		var dst = this.knownIslands[ids2[weighted( weights )]];
+
+		var limit = Math.min( Math.floor(src.population / 2), dst.tribe == this ? dst.size - dst.population : dst.size );
+		this.launch( this, src, dst, limit );
 	}
 
 	for (var i in this.islands) {
 		var island = this.islands[i];
 		if (island.curTask == null) {
-			if (!island.has( Buildings.OUTPOST )) {
+			if (!island.has( Task.OUTPOST )) {
 				island.curTask = {
-					name		: Buildings.OUTPOST,
+					name		: Task.OUTPOST,
 					progress	: 0
 				}
-			} else if (!island.has( Buildings.SHIPYARD )) {
+			} else if (!island.has( Task.SHIPYARD )) {
 				island.curTask = {
-					name		: Buildings.SHIPYARD,
+					name		: Task.SHIPYARD,
 					progress	: 0
 				}
 			} else if (!island.ship) {
 				island.curTask = {
-					name		: Buildings.FLOTILLA,
+					name		: Task.FLOTILLA,
 					progress	: 0
 				}
 			}
@@ -186,7 +212,7 @@ Tribe.prototype.addIsland = function( island, population ) {
 	this.islands[island.id] = island;
 	if (!this.home) {
 		this.home = island;
-		this.home.buildings = [Buildings.OUTPOST, Buildings.SHIPYARD];
+		this.home.Task = [Task.OUTPOST, Task.SHIPYARD];
 		this.home.ship = true;
 	}
 

@@ -5,6 +5,7 @@
 	<title>Ocean Tribes</title>
 	<script type="text/javascript" src="phaser.min.js"></script>
 	<script type="text/javascript" src="perlin.js"></script>
+	<script type="text/javascript" src="weighted.js"></script>
 	<script type="text/javascript" src="ui/view.js"></script>
 	<script type="text/javascript" src="ui/textview.js"></script>
 	<script type="text/javascript" src="panels/panel.js"></script>
@@ -13,7 +14,7 @@
 	<script type="text/javascript" src="popups/assaultpopup.js"></script>
 	<script type="text/javascript" src="gamescene.js"></script>
 	<script type="text/javascript" src="universe.js"></script>
-	<script type="text/javascript" src="buildings.js"></script>
+	<script type="text/javascript" src="Task.js"></script>
 	<script type="text/javascript" src="island.js"></script>
 	<script type="text/javascript" src="tribe.js"></script>
 	<script type="text/javascript" src="fleet.js"></script>
@@ -35,6 +36,7 @@
 	<script type="text/javascript" src="ui/progressbar.js"></script>
 	<script type="text/javascript" src="ui/gamelog.js"></script>
 	<script type="text/javascript" src="generationscene.js"></script>
+	<script type="text/javascript" src="warrior.js"></script>
     <style type="text/css">
         body {
             margin: 0;
@@ -53,13 +55,19 @@ function preload() {
 	game.stage.backgroundColor = '#003344';
 
 	game.load.image( 'ocean', 'assets/ocean.png' );
-	game.load.image( 'beach', 'assets/beach.png' );
+	game.load.image( 'beach_normal',	'assets/normal.png' );
+	game.load.image( 'beach_cliffs',	'assets/cliffs.png' );
+	game.load.image( 'beach_stone',		'assets/stone.png' );
+	game.load.image( 'beach_timber',	'assets/timber.png' );
+	game.load.image( 'beach_game',		'assets/game.png' );
+	game.load.image( 'sky', 'assets/sky.png' );
 	game.load.spritesheet( 'flag', 'assets/flags.png', 16, 16 );
 	game.load.spritesheet( 'fleet', 'assets/fleet.png', 24, 24 );
 	game.load.spritesheet( 'ship', 'assets/ships.png', 24, 24 );
-	game.load.spritesheet( 'warrior', 'assets/warrior.png', 64, 64 );
+	game.load.spritesheet( 'warrior', 'assets/warrior.png', Warrior.SIZE, Warrior.SIZE );
 	game.load.spritesheet( 'log', 'assets/log.png', 30, 30 );
 	game.load.image( 'dashed', 'assets/dashed.png' );
+	game.load.image( 'blood', 'assets/blood.png' );
 	game.load.spritesheet( 'shard', 'assets/shard.png', 128, 128 );
 
 	game.load.bitmapFont( 'font5', 'assets/font5.png', 'assets/font5.xml' );

@@ -115,12 +115,12 @@ IslandPanel.prototype.select = function( island, refresh ) {
 		this.remove( this.buildingsList[i] );
 	}
 	this.buildingsList = [];
-	for (var i in island.buildings) {
-		var building = island.buildings[i];
+	for (var i in island.Task) {
+		var building = island.Task[i];
 		var item = game.add.bitmapText( 0, 0, 'font8', building, 8, this );
 		item.inputEnabled = true;
 		item.events.onInputOver.add( this.showBuildingTooltip, {
-			text	: Buildings[building].info, 
+			text	: Task[building].info, 
 			title	: building[0].toUpperCase() + building.substr( 1 )
 		} );
 		item.events.onInputOut.add( Tooltip.hide );
@@ -169,7 +169,7 @@ IslandPanel.prototype.showBiomeTooltip = function() {
 		Tooltip.show( "High cliffs of this island provide defense bonus", "Cliffs" );
 		break;
 	case Island.Resources.STONE:
-		Tooltip.show( "Stone of this island allows faster buildings construction", "Stone" );
+		Tooltip.show( "Stone of this island allows faster Task construction", "Stone" );
 		break;
 	}
 }

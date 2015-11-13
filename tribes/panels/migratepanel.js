@@ -91,7 +91,7 @@ MigratePanel.prototype.mapClicked = function( object ) {
 MigratePanel.prototype.select = function( island ) {
 
 	if (this.from) {
-		this.to = island != this.from ? island : null;
+		this.to = (island != this.from/* && Universe.distance( this.from, island ) < this.from.tribe.viewDistance*/) ? island : null;
 	} else {
 		this.from = island;
 
@@ -149,7 +149,7 @@ MigratePanel.prototype.updateSize = function() {
 MigratePanel.prototype.updateDuration = function() {
 	if (this.from && this.to) {
 
-		this.time.text = "Duartion: " + Universe.time2sail( this.from.tribe, this.from, this.to ) + " turns";
+		this.time.text = "Duration: " + Universe.time2sail( this.from.tribe, this.from, this.to ) + " turns";
 
 	} else {
 		this.time.text = "";

@@ -13,7 +13,7 @@ function Island( x, y, params ) {
 	this.resource	= params.resource || null;
 
 	this.tribe = null;
-	this.buildings = [];
+	this.Task = [];
 
 	this.curTask = null;
 	this.ship = false;
@@ -23,8 +23,6 @@ function Island( x, y, params ) {
 	this.land = null;
 	this.shore = null;
 	this.rotation = 0;
-
-//	this.buildMap();
 }
 
 Island.MIN_SIZE = 20;
@@ -48,13 +46,13 @@ Island.prototype.grow = function() {
 	if (this.tribe) {
 		var changed = false;
 
-		if (this.has( Buildings.OUTPOST )) {
+		if (this.has( Task.OUTPOST )) {
 
 			var grow = 0.05 * this.population * Math.sqrt( 1 - this.population / this.size );
 			if (this.resource == Island.Resources.GAME) {
 				grow *= 1.5;
 			}
-			if (this.has( Buildings.STOREHOUSE )) {
+			if (this.has( Task.STOREHOUSE )) {
 				grow *= 1.5;
 			}
 			var newPop = Math.min( this.population + grow, this.size );
@@ -68,24 +66,24 @@ Island.prototype.grow = function() {
 
 		if (this.curTask) {
 			var prod = this.getProduction();
-			if (this.curTask.name == Buildings.FLOTILLA && this.resource == Island.Resources.TIMBER) {
+			if ((this.curTask.name == Task.FLOTILLA || this.curTask.name == Task.SEIGE) && this.resource == Island.Resources.TIMBER) {
 				prod *= 1.5;
 			}
-			if (this.curTask.name != Buildings.FLOTILLA && this.resource == Island.Resources.STONE) {
+			if (this.curTask.name != Task.FLOTILLA && this.resource == Island.Resources.STONE) {
 				prod *= 1.5;
 			}
 			this.curTask.progress += prod;
-			if (this.curTask.progress >= Buildings[this.curTask.name].cost) {
+			if (this.curTask.progress >= Task[this.curTask.name].cost) {
 				if (this.tribe == Universe.player) {
 					gamelog.message( 1, this.name + ' has completed ' + this.curTask.name, function() {
 						scene.switchPanel( IslandMainPanel ).select( this );
 					}, this );
 				}
-				if (this.curTask.name == Buildings.FLOTILLA) {
+				if (this.curTask.name == Task.FLOTILLA || this.curTask.name == Task.SEIGE) {
 					this.ship = true;
 					this.onChanged.dispatch();
 				} else {
-					this.buildings.push( this.curTask.name );
+					this.Task.push( this.curTask.name );
 				}
 				this.curTask = null;
 			}
@@ -206,7 +204,7 @@ Island.prototype.colonize = function( tribe, size ) {
 	tribe.addIsland( this, size );
 
 	this.curTask = {
-		name		: Buildings.OUTPOST,
+		name		: Task.OUTPOST,
 		progress	: 0
 	}
 
@@ -218,7 +216,7 @@ Island.prototype.colonize = function( tribe, size ) {
 }
 
 Island.prototype.has = function( building ) {
-	return this.buildings && this.buildings.indexOf( building ) != -1;
+	return this.Task && this.Task.indexOf( building ) != -1;
 }
 
 Island.prototype.canLaunch = function() {
@@ -227,7 +225,7 @@ Island.prototype.canLaunch = function() {
 
 Island.prototype.getProduction = function() {
 	var prod = Math.floor( this.population );
-	if (this.has( Buildings.FORGE )) {
+	if (this.has( Task.FORGE )) {
 		prod *= 1.5;
 	}
 	return prod;

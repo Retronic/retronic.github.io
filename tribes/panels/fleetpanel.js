@@ -94,7 +94,7 @@ FleetPanel.prototype.select = function( fleet, refresh ) {
 	this.fleet = fleet;
 	this.fleet.onChanged.add( this.onFleetChanged, this );
 
-	this.name.text = fleet.tribe.name + " flotilla";
+	this.name.text = fleet.tribe.name + (fleet.seige ? " seige flotilla" : " flotilla");
 	this.name.tint = fleet.tribe.color;
 
 	this.size.text = "size: " + fleet.size;

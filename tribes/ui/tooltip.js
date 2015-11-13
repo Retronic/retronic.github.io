@@ -8,18 +8,18 @@ Tooltip.prototype.constructor = Tooltip;
 Tooltip.prototype.createChildren = function() {
 	Panel.prototype.createChildren.call( this );
 
-	this.tfTitle = game.add.bitmapText( Panel.MARGIN, Panel.MARGIN, 'font8', "", 8, this );
+	this.tfTitle = game.add.bitmapText( Panel.MARGIN, Panel.MARGIN, 'font12', "", 12, this );
 	this.tfTitle.smoothed = false;
 	this.tfTitle.tint = 0xFFFF88;
 
-	this.tfText = game.add.bitmapText( Panel.MARGIN, Panel.MARGIN, 'font8', "", 8, this );
+	this.tfText = game.add.bitmapText( Panel.MARGIN, Panel.MARGIN, 'font12', "", 12, this );
 	this.tfText.smoothed = false;
 }
 
 Tooltip.prototype.layout = function() {
 	Panel.prototype.layout.call( this );
 
-	this.tfText.y = this.tfTitle.y + this.tfTitle.height;
+	this.tfText.y = this.tfTitle.y + this.tfTitle.height + Panel.LINE;
 }
 
 Tooltip.prototype.move = function( pointer, x, y, down) {
@@ -35,7 +35,7 @@ Tooltip.prototype.values = function( text, title ) {
 	this.tfTitle.text = title || "";
 	this.resize( 
 		this.tfText.width + Panel.MARGIN*2, 
-		this.tfText.height + this.tfTitle.height + Panel.MARGIN*2 );
+		this.tfText.height + this.tfTitle.height + Panel.MARGIN*2 + Panel.LINE );
 }
 
 Tooltip._instance = null;

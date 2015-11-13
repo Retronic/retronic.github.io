@@ -14,7 +14,7 @@ ConstructPanel.prototype.createChildren = function() {
 	this.add( this.header );
 
 	// For all buttons we create a group so we could easily remove them
-	this.buildings = game.add.group( this );
+	this.Task = game.add.group( this );
 
 	this.cancel = new RGButton( game, "Cancel", this.onCancel, this );
 	this.addChild( this.cancel );
@@ -32,8 +32,8 @@ ConstructPanel.prototype.layout = function() {
 	this.header.y = this.sectionTop + Panel.MARGIN;
 
 	var pos = this.header.bottom + Panel.MARGIN;
-	for (var b in this.buildings.children) {
-		var btn = this.buildings.children[b];
+	for (var b in this.Task.children) {
+		var btn = this.Task.children[b];
 		btn.resize( this.reqWidth - Panel.MARGIN*2, RGButton.HEIGHT );
 		btn.x = Panel.MARGIN;
 		btn.y = pos;
@@ -50,18 +50,18 @@ ConstructPanel.prototype.select = function( island, refresh ) {
 		return;
 	}
 
-	this.buildings.removeAll( true );
+	this.Task.removeAll( true );
 
-	for (var b in Buildings.ALL) {
-		var name = Buildings.ALL[b];
+	for (var b in Task.Buildings) {
+		var name = Task.Buildings[b];
 
 		// Checking if the island already has this building
 		if (!this.island.has( name )) {
 
 			var canConstruct = true;
 			// Checking requirements for this building
-			for (var r in Buildings[name].reqs) {
-				if (!this.island.has( Buildings[name].reqs[r] )) {
+			for (var r in Task[name].reqs) {
+				if (!this.island.has( Task[name].reqs[r] )) {
 					canConstruct = false;
 					break;
 				}
@@ -76,12 +76,12 @@ ConstructPanel.prototype.select = function( island, refresh ) {
 				var cap = name[0].toUpperCase() + name.substr( 1 );
 				var btn = new ProgressBar( game, cap, this.onBuilding, this );
 				if (island.curTask && island.curTask.name == name) {
-					btn.maxValue = Buildings[name].cost;
+					btn.maxValue = Task[name].cost;
 					btn.value = island.curTask.progress;
 				}
 				btn.name = name;
-				btn.tooltip = Buildings[name].info;
-				this.buildings.add( btn );
+				btn.tooltip = Task[name].info;
+				this.Task.add( btn );
 			}
 		}
 	}

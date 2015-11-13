@@ -9,6 +9,8 @@ function Fleet( tribe, from, to, size, duration ) {
 	this.duration = duration;
 	this.progress = 0;
 
+	this.seige = from.has( Task.WORKSHOP );
+
 	this.x = from.x;
 	this.y = from.y;
 

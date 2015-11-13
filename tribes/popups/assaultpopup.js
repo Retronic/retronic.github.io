@@ -1,22 +1,27 @@
 function AssaultPopUp( game, fleet ) {
-	PopUp.call( this, game );
 
 	this.fleet = fleet;
 
+	PopUp.call( this, game );
+
 	for (var i=0; i < fleet.size; i++) {
-		var warrior = game.add.image( 0, 0, 'warrior', fleet.tribe.attackLevel * 4 + fleet.tribe.flag, this.attackers );
-		warrior.smoothed = false;
+		var warrior = new Warrior( game, fleet.tribe );
+		this.attackers.add( warrior );
 	}
 
 	for (var i=0; i < fleet.to.population; i++) {
-		var warrior = game.add.image( 0, 0, 'warrior', fleet.to.tribe.attackLevel * 4 + fleet.to.tribe.flag, this.defenders );
-		warrior.scale.x = -1;
+		var warrior = new Warrior( game, fleet.to.tribe );
+		this.defenders.add( warrior );
 	}
 
 	this.name.text = fleet.to.name;
 	this.name.tint = fleet.to.tribe.color;
 
-	game.time.events.add( Phaser.Timer.QUARTER, this.killOne, this );
+	if (fleet.seige || fleet.to.has( Task.CASTLE )) {
+		game.time.events.add( Phaser.Timer.QUARTER, this.doAOE, this );	
+	} else {
+		game.time.events.add( Phaser.Timer.QUARTER, this.killOne, this );
+	}
 
 	this.resize( this.beach.width + Panel.LINE*2, this.beach.height + Panel.LINE*2 );
 }
@@ -28,13 +33,34 @@ AssaultPopUp.prototype.createChildren = function() {
 
 	PopUp.prototype.createChildren.call( this );
 
-	this.beach = game.add.image( Panel.LINE, Panel.LINE, 'beach', null, this );
+	this.sky = game.add.tileSprite( Panel.LINE, Panel.LINE, 800, 60, 'sky', null, this );
+	this.sky.autoScroll( Math.random() * 20 - 10, 0 );
+
+	var bg;
+	switch (this.fleet.to.resource) {
+	case Island.Resources.STONE:
+		bg = 'beach_stone';
+		break;
+	case Island.Resources.CLIFFS:
+		bg = 'beach_cliffs';
+		break;
+	case Island.Resources.TIMBER:
+		bg = 'beach_timber';
+		break;
+	case Island.Resources.GAME:
+		bg = 'beach_game';
+		break;
+	default:
+		bg = 'beach_normal';
+	}
+	this.beach = game.add.image( Panel.LINE, Panel.LINE, bg, null, this );
 	this.beach.smoothed = false;
 
 	this.attackers = game.add.group( this );
 	this.defenders = game.add.group( this );
+	this.defenders.scale.x = -1;
 
-	this.name = game.add.bitmapText( 0, 0, "font12", "", 12, this );
+	this.name = game.add.bitmapText( 0, 0, 'font12', "", 12, this );
 	this.name.smoothed = false;
 }
 
@@ -43,22 +69,23 @@ AssaultPopUp.prototype.layout = function() {
 	PopUp.prototype.layout.call( this );
 
 	var n1 = this.attackers.length + this.defenders.length - 2;
-	this.gap = Math.floor( (this.reqWidth - 64*2/*sprite size*/ - Panel.MARGIN*2) / n1 );
+	this.gap = Math.floor( (this.reqWidth - Warrior.SIZE*2 - Panel.MARGIN*2) / n1 );
 	if (this.gap > 16) {
 		this.gap = 16;
 	}
-	var margin = (this.reqWidth - this.gap * n1 - 64*2/*sprite size*/) / 2;
+	var margin = (this.reqWidth - this.gap * n1 - Warrior.SIZE*2) / 2;
 
 	for (var i=0; i < this.attackers.length; i++) {
 		var warrior = this.attackers.children[i];
 		warrior.x = margin + this.gap * i;
-		warrior.y = this.reqHeight - Panel.LINE - 64 - Math.random() * 80;
+		warrior.y = this.reqHeight - Panel.LINE - Math.floor( Math.random() * 80 );
 	}
 
+	this.defenders.x = this.reqWidth;
 	for (var i=0; i < this.defenders.length; i++) {
 		var warrior = this.defenders.children[i];
-		warrior.x = this.reqWidth - margin - this.gap * i;
-		warrior.y = this.reqHeight - Panel.LINE - 64 - Math.random() * 80;
+		warrior.x = margin + this.gap * i;
+		warrior.y = this.reqHeight - Panel.LINE - Math.floor( Math.random() * 80 );
 	}
 
 	this.attackers.sort( 'y', Phaser.Group.SORT_ASCENDING );
@@ -66,6 +93,46 @@ AssaultPopUp.prototype.layout = function() {
 
 	this.name.x = Math.floor( (this.reqWidth - this.name.width) / 2 );
 	this.name.y = Panel.LINE * 2;
+}
+
+AssaultPopUp.prototype.doAOE = function() {
+	if (this.fleet.seige) {
+		var damage = Math.min( this.fleet.to.population, 1 + Math.floor( (Math.random() + Math.random()) * 5 ) );
+		for (var i=0; i < damage; i++) {
+			var warrior = null;
+			this.defenders.forEachAlive( function( w ) { 
+				if (!warrior || w.x < warrior.x) {
+					warrior = w;
+				}
+			} );
+			warrior.slay();
+		}
+		game.add.audio( 'hit' ).play();
+	}
+
+	if (this.fleet.to.has( Task.CASTLE )) {
+		var damage = Math.min( this.fleet.size, 1 + Math.floor( (Math.random() + Math.random()) * 8 ) );
+		for (var i=0; i < damage; i++) {
+			var warrior = null;
+			this.attackers.forEachAlive( function( w ) { 
+				if (!warrior || w.x < warrior.x) {
+					warrior = w;
+				}
+			} );
+			warrior.slay();
+		}
+		game.add.audio( 'hit' ).play();
+	}
+
+	if (this.defenders.length && this.attackers.length) {
+		game.time.events.add( Phaser.Timer.QUARTER, this.killOne, this );
+	} else if (this.attackers.length) {
+		game.time.events.add( Phaser.Timer.SECOND, this.assaultOver, this, true );
+	} else if (this.defenders.length) {
+		game.time.events.add( Phaser.Timer.SECOND, this.assaultOver, this, false );
+	} else {
+
+	}
 }
 
 AssaultPopUp.prototype.killOne = function() {
@@ -76,11 +143,11 @@ AssaultPopUp.prototype.killOne = function() {
 	// Removing a sprite from its group
 	var warrior = null;
 	group.forEachAlive( function( w ) { 
-		if (!warrior || w.x * w.scale.x > warrior.x * warrior.scale.x) {
+		if (!warrior || w.x > warrior.x) {
 			warrior = w;
 		}
 	} );
-	warrior.destroy();
+	warrior.slay();
 
 	game.add.audio( group == this.defenders ? 'hit' : 'miss' ).play();
 
@@ -139,11 +206,11 @@ AssaultPopUp.attack = function( fleet ) {
 	if (fleet.to.resource == Island.Resources.CLIFFS) {
 		b *= 2;
 	}
-	if (fleet.to.has( Buildings.CASTLE )) {
+	if (fleet.to.has( Task.CASTLE )) {
 		b *= 5;
-	} else if (fleet.to.has( Buildings.WALLS )) {
+	} else if (fleet.to.has( Task.WALLS )) {
 		b *= 3;
-	} else if (fleet.to.has( Buildings.OUTPOST )) {
+	} else if (fleet.to.has( Task.OUTPOST )) {
 		b *= 1.5;
 	}
 	return a > b;
@@ -152,6 +219,16 @@ AssaultPopUp.attack = function( fleet ) {
 AssaultPopUp.resolve = function( fleet ) {
 	var attackers = Math.floor( fleet.size );
 	var defenders = Math.floor( fleet.to.population );
+
+	if (fleet.seige) {
+		var damage = 1 + Math.floor( (Math.random() + Math.random()) * 5 );
+		defenders = Math.max( 0, defenders - damage );
+	}
+
+	if (fleet.to.has( Task.CASTLE )) {
+		var damage = 1 + Math.floor( (Math.random() + Math.random()) * 8 );
+		attackers = Math.max( 0, attackers - damage );
+	}
 
 	while (attackers && defenders) {
 		if (AssaultPopUp.attack( fleet )) {
@@ -178,9 +255,9 @@ AssaultPopUp.aftermath = function( fleet, success, survivors ) {
 			scene.map.updateFieldOfView( Universe.player );
 		}
 
-		if (!island.has( Buildings.OUTPOST )) {
+		if (!island.has( Task.OUTPOST )) {
 			island.curTask = {
-				name		: Buildings.OUTPOST, 
+				name		: Task.OUTPOST, 
 				progress	: 0
 			};
 		}

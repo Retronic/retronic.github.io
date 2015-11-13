@@ -29,7 +29,7 @@ Tech.PROTO = [
 	Tech.ATTACK_UP,		// 15
 	Tech.RANGE_UP,		// 16
 	null,
-	Buildings.CASTLE,	// 18
+	Task.CASTLE,	// 18
 	null,
 	Tech.ATTACK_UP,		// 20
 	null,

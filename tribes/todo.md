@@ -3,7 +3,7 @@
 	* Fewer islands?
 	* Use "graphs" for building the archipelago
 * Gameplay
-	* Meaningful buildings for improving defense, production, growth, science output etc.
+	* Meaningful Task for improving defense, production, growth, science output etc.
 		* Workshop (Walls, Castle) - upgrades ships with siege weapons
 		* Shrine (Walls) - restores a part of fallen population after successful defense
 		* Temple (Shrine, Castle) - increases science output
