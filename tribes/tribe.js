@@ -12,7 +12,7 @@ function Tribe( params ) {
 	this.islands = {};
 
 	// Map of islands which this tribe is aware of (including its own ones)
-	this.knownIslands = {};
+	this.visibleIslands = {};
 
 	// Home island of the tribe
 	this.home = null;
@@ -92,7 +92,7 @@ Tribe.prototype.process = function() {
 		if (assault.to.tribe == this) {
 			// The island was already captured on this turn
 			assault.arrive();
-			assault.dispatch();
+			assault.onChanged.dispatch();
 			assault = null;
 		} else {
 			if (this == Universe.player || assault.to.tribe == Universe.player) {
@@ -139,8 +139,8 @@ Tribe.prototype.think = function() {
 	}
 
 	var ids2 = [];
-	for (var i in this.knownIslands) {
-		if (this.knownIslands[i].tribe != this) {
+	for (var i in this.visibleIslands) {
+		if (this.visibleIslands[i].tribe != this) {
 			ids2.push( i );
 		}
 	}
@@ -155,7 +155,7 @@ Tribe.prototype.think = function() {
 
 		weights = [];
 		for (var i=0; i < ids2.length; i++) {
-			var isl = this.knownIslands[ids2[i]];
+			var isl = this.visibleIslands[ids2[i]];
 			var w = isl.size * isl.size;
 			if (isl.tribe != null) {
 				w *= src.population/2 / isl.population;
@@ -172,7 +172,7 @@ Tribe.prototype.think = function() {
 			w /= Universe.distance( src, isl );
 			weights.push( w );
 		}
-		var dst = this.knownIslands[ids2[weighted( weights )]];
+		var dst = this.visibleIslands[ids2[weighted( weights )]];
 
 		var limit = Math.min( Math.floor(src.population / 2), dst.tribe == this ? dst.size - dst.population : dst.size );
 		this.launch( this, src, dst, limit );
@@ -252,17 +252,19 @@ Tribe.prototype.updateIslandsVisibility = function() {
 	var r2 = this.getViewDistance();
 	r2 *= r2;
 
+	this.visibleIslands = {};
+
 	for (var i in this.islands) {
 		var isl1 = this.islands[i];
-		this.knownIslands[i] = isl1;
+		this.visibleIslands[i] = isl1;
 		for (var j in Universe.islands) {
 			// If island {j} is already known, skip it
-			if (this.knownIslands[j]) {
+			if (this.visibleIslands[j]) {
 				continue;
 			}
 			var isl2 = Universe.islands[j];
 			if (Universe.distance2( isl1, isl2 ) < r2) {
-				this.knownIslands[j] = isl2;
+				this.visibleIslands[j] = isl2;
 			}
 		}
 	}

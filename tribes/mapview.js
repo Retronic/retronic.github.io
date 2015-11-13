@@ -157,8 +157,8 @@ MapView.prototype.updateFieldOfView = function( tribe ) {
 		this.ocean.mask.drawCircle( island.x, island.y, d );
 	}
 
-	for (i in tribe.knownIslands) {
-		var view = tribe.knownIslands[i].view;
+	for (i in tribe.visibleIslands) {
+		var view = tribe.visibleIslands[i].view;
 		if (!view.visible) {
 			view.alpha = 0;
 			view.visible = true;
@@ -174,8 +174,8 @@ MapView.prototype.adjustWindow = function( tribe ) {
 	var maxx = Number.NEGATIVE_INFINITY;
 	var maxy = Number.NEGATIVE_INFINITY;
 
-	for (var i in tribe.knownIslands) {
-		var island = tribe.knownIslands[i];
+	for (var i in tribe.visibleIslands) {
+		var island = tribe.visibleIslands[i];
 		if (island.x < minx) {
 			minx = island.x;
 		}

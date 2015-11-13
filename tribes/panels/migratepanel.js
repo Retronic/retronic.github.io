@@ -91,7 +91,7 @@ MigratePanel.prototype.mapClicked = function( object ) {
 MigratePanel.prototype.select = function( island ) {
 
 	if (this.from) {
-		this.to = (island != this.from/* && Universe.distance( this.from, island ) < this.from.tribe.viewDistance*/) ? island : null;
+		this.to = (island != this.from && this.from.tribe.visibleIslands[island.id]) ? island : null;
 	} else {
 		this.from = island;
 

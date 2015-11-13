@@ -188,7 +188,7 @@ Island.prototype.buildMap = function() {
 				Island.shard.updateTransform();
 				this.land.render( Island.shard );
 
-				z *= 1.6;
+				z *= 1.8;
 				Island.shard.scale.set( z, z );
 				Island.shard.updateTransform();
 				this.shore.render( Island.shard );

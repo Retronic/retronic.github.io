@@ -16,6 +16,9 @@ TribePanel.prototype.createChildren = function() {
 	this.add( this.info );
 
 	this.tech = new ProgressBar( game, "Tech" );
+	this.tech.onClick.add( function() {
+		PopUp.show( new TechPopUp( game, this.tribe ) );
+	}, this );
 	this.add( this.tech );
 }
 

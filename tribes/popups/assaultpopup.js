@@ -192,10 +192,12 @@ AssaultPopUp.prototype.assaultOver = function( attackersWin ) {
 
 	// Hiding the window and selecting the island on the map
 	this.hide();
-//	scene.switchPanel( IslandMainPanel ).select( island );
 
 	// We can now proceed with the rest of the actions of the current tribe
 	Universe.curTribe.state = Tribe.State.NOT_PROCESSED;
+}
+
+AssaultPopUp.prototype.onClose = function() {
 }
 
 AssaultPopUp.attack = function( fleet ) {
