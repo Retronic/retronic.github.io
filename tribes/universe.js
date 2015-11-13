@@ -162,13 +162,13 @@ Universe = new (function() {
 
 			// If any of the left "good" islands are too close to
 			// the recently selected one, remove them from the list
-		/*	for (j=homeIslands.length-1; j >= 0; j--) {
+			for (j=homeIslands.length-1; j >= 0; j--) {
 				var isl = homeIslands[j];
 				if (this.distance2( island, isl ) < 36 * Universe.MIN_DISTANCE2) {
 					console.log( 'discarding home island candidate' );
 					homeIslands.splice( j, 1 );
 				}
-			}*/
+			}
 		}
 
 		// It's the last thing to do, because want to be sure

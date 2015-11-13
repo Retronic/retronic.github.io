@@ -37,8 +37,9 @@ function Tribe( params ) {
 Tribe.NORSE	= function() { return new Tribe( {name: 'Norse', flag: 0, color: 0xff4040} ) };
 Tribe.SLAVS	= function() { return new Tribe( {name: 'Slavs', flag: 1, color: 0xbb40ff} ) };
 Tribe.CELTS	= function() { return new Tribe( {name: 'Celts', flag: 2, color: 0x40bbff} ) };
+Tribe.ARABS	= function() { return new Tribe( {name: 'Arabs', flag: 3, color: 0xffff40} ) };
 
-Tribe.ALL	= function() { return [Tribe.NORSE(), Tribe.SLAVS(), Tribe.CELTS()] };
+Tribe.ALL	= function() { return [Tribe.NORSE(), Tribe.SLAVS(), Tribe.CELTS(), Tribe.ARABS()] };
 
 Tribe.State = {
 	NOT_GROWN		: "not grown",
