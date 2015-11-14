@@ -1,5 +1,8 @@
 function ConstructPanel( game ) {
 	IslandPanel.call( this, game );
+
+	this.esc = game.input.keyboard.addKey( Phaser.Keyboard.ESC );
+	this.esc.onDown.add( this.onCancel, this );
 }
 
 ConstructPanel.prototype = Object.create( IslandPanel.prototype );
@@ -103,4 +106,9 @@ ConstructPanel.prototype.onBuilding = function( btn ) {
 		}
 	}
 	scene.switchPanel( IslandMainPanel ).select( this.island );
+}
+
+ConstructPanel.prototype.destroy = function() {
+	this.esc.onDown.remove( this.onCancel, this );
+	IslandPanel.prototype.destroy.call( this );
 }

@@ -135,7 +135,11 @@ Universe = new (function() {
 			return false;
 		}
 
-		this.tribes = par.tribes;
+		this.tribes = [];
+		for (var i=0; i < par.tribes.length; i++) {
+			this.tribes.push( new Tribe( par.tribes[i] ) );
+		}
+
 		this.player = 
 		this.curTribe = 
 			this.tribes.length ? this.tribes[0] : null;;
@@ -151,7 +155,7 @@ Universe = new (function() {
 
 			// Select a random "good" island, make it home for one of the tribes,
 			// remove it from the list of "good" islands
-			var tribe = par.tribes[i];
+			var tribe = this.tribes[i];
 			var index = rnd.between( 0, homeIslands.length-1 );
 			var island = homeIslands[index];
 			// All home islands are equal

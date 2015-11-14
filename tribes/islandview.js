@@ -56,7 +56,7 @@ function IslandView( game, island ) {
 	this.flag.anchor.set( 0.5, 0.5 );
 	if (island.tribe && island.tribe.home == island) {
 		this.flag.visible = true;
-		this.flag.frame = island.tribe.flag;
+		this.flag.frame = island.tribe.sprite;
 	} else {
 		this.flag.visible = false;
 	}
@@ -67,7 +67,7 @@ function IslandView( game, island ) {
 
 	if (island.tribe && island.ship) {
 		this.flotilla.visible = true;
-		this.flotilla.frame = island.tribe.flag;
+		this.flotilla.frame = island.tribe.sprite;
 	} else {
 		this.flotilla.visible = false;
 	}
@@ -106,14 +106,14 @@ IslandView.prototype.refresh = function() {
 
 	if (island.tribe && island.tribe.home == island) {
 		this.flag.visible = true;
-		this.flag.frame = island.tribe.flag;
+		this.flag.frame = island.tribe.sprite;
 	} else {
 		this.flag.visible = false;
 	}
 
 	if (island.tribe == Universe.player && island.ship) {
 		this.flotilla.visible = true;
-		this.flotilla.frame = island.tribe.flag;
+		this.flotilla.frame = island.tribe.sprite;
 	} else {
 		this.flotilla.visible = false;
 	}

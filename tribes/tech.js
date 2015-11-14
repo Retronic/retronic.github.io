@@ -1,6 +1,6 @@
 function Tech() {
 	this.plan = Tech.PROTO.concat();
-	for (var i=0; i < 10; i++) {
+	for (var i=0; i < 8; i++) {
 		var index = Math.floor( Math.random() * (this.plan.length - 1) );
 		var tmp = this.plan[index];
 		this.plan[index] = this.plan[index+1];
@@ -20,7 +20,7 @@ Tech.PROTO = [
 	Tech.SPEED_UP,		// 6
 	Tech.RANGE_UP,		// 7
 	null,
-	null,
+	Task.WORKSHOP,		// 9
 	Tech.ATTACK_UP,		// 10
 	Tech.RANGE_UP,		// 11
 	null,
@@ -29,7 +29,7 @@ Tech.PROTO = [
 	Tech.ATTACK_UP,		// 15
 	Tech.RANGE_UP,		// 16
 	null,
-	Task.CASTLE,	// 18
+	Task.CASTLE,		// 18
 	null,
 	Tech.ATTACK_UP,		// 20
 	null,

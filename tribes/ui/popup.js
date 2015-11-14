@@ -2,6 +2,9 @@ function PopUp( game ) {
 	Panel.call( this, game );
 
 	this.blocker.events.onInputDown.add( this.onBlocker, this );
+
+	this.esc = game.input.keyboard.addKey( Phaser.Keyboard.ESC );
+	this.esc.onDown.add( this.onClose, this );
 }
 
 PopUp.prototype = Object.create( Panel.prototype );
@@ -41,6 +44,8 @@ PopUp.prototype.layout = function() {
 
 PopUp.prototype.destroy = function() {
 	this.blocker.events.onInputDown.remove( this.onBlocker, this );
+	this.esc.onDown.remove( this.onClose, this );
+
 	Panel.prototype.destroy.call( this );
 }
 

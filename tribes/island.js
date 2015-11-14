@@ -237,14 +237,14 @@ Island.prototype.getScience = function() {
 }
 
 Island.randomName = function() {
-	// Auskerry Arran Bressay Berneray Ceallasigh Carna Danna Davaar Eriska Eorsa Fara Flodday Gigha Grimsay Hunda Hirta Innis Iona Jura 
+	// Auskerry Arran Bressay Berneray Ceallasigh Carna Danna Davaar Eriska Eorsa Erraid Fara Flodday Gigha Grimsay Hunda Hirta Innis Iona Jura 
 	// Kirkibost Lunga Lismore Mingulay Muckle Oronsay Pabay Ronay Samphrey Swona Shillay Tiree Tanera Ulva Vementry Whalsay Wyre
-	var a = ['Aus','Ar','Bres','Ber','Ce','Car','Dan','Da','E','E','Fa','Flod','Gig','Grim','Hun','Hir','In','I','Ju',
+	var a = ['Aus','Ar','Bres','Ber','Ce','Car','Dan','Da','E','E','Er','Fa','Flod','Gig','Grim','Hun','Hir','In','I','Ju',
 		'Kir','Lun','Lis','Min','Muck','O','Pa','Ro','Sam','Swo','Shil','Ti','Ta','Ul','Ve','Whal','Wy'];
 	var b = ['ker','ne','al','la','va','ris','or','o','ki','mo','gu','ron','ne','men'];
 	var c = ['ry','ran','say','ray','sigh','na','na','ar','ka','sa','ra','day','ha','say','da','ta','nis','na','ra',
-		'bost','ga','re','lay','le','say','bay','nay','phrey','na','lay','ree','ra','va','try','say','re'];
-	var l = [3, 2, 3, 3, 4, 2, 2, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 3, 2, 3, 2, 3, 3, 2, 3, 2, 2, 2, 2, 2, 2, 3, 2, 3, 2, 2];
+		'bost','ga','re','lay','le','say','bay','nay','phrey','na','lay','ree','ra','va','try','say','re','raid'];
+	var l = [3, 2, 3, 3, 4, 2, 2, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 3, 2, 3, 2, 3, 3, 2, 3, 2, 2, 2, 2, 2, 2, 3, 2, 3, 2, 2, 2];
 	var n = l[Math.floor(Math.random() * l.length)] - 2;
 	var name = a[Math.floor(Math.random() * a.length)];
 	for (var i=0; i < n; i++) {

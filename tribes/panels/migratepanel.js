@@ -5,6 +5,9 @@ function MigratePanel( game ) {
 	this.to = null;
 
 	this.size = 0;
+
+	this.esc = game.input.keyboard.addKey( Phaser.Keyboard.ESC );
+	this.esc.onDown.add( this.onCancel, this );
 }
 
 MigratePanel.prototype = Object.create( IslandPanel.prototype );
@@ -154,4 +157,9 @@ MigratePanel.prototype.updateDuration = function() {
 	} else {
 		this.time.text = "";
 	}
+}
+
+MigratePanel.prototype.destroy = function() {
+	this.esc.onDown.remove( this.onCancel, this );
+	IslandPanel.prototype.destroy.call( this );
 }

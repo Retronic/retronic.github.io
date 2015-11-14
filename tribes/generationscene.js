@@ -29,12 +29,14 @@ GenerationScene.prototype.init = function () {
 }
 
 GenerationScene.prototype.step = function () {
-	var tribes = Tribe.ALL().concat();
-	var shuffle = (Math.random() * 4) | 0;
+
+	var tribes = Tribe.ALL.concat();
+	var shuffle = (Math.random() * tribes.length) | 0;
 	for (var i=0; i < shuffle; i++) {
 		tribes.push( tribes.shift() );
 	}
 	tribes.pop();
+
 	if (Universe.build( {nIslands: 24, tribes: tribes} )) {
 		switchScene( GameScene );
 	}

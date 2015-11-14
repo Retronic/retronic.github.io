@@ -2,7 +2,7 @@ function Warrior( game, tribe ) {
 	Phaser.Image.call( this, game, 0, 0, 'warrior' );
 
 	this.smoothed = false;
-	this.frame = tribe.attackLevel * 4 + tribe.flag;
+	this.frame = tribe.attackLevel * 4 + tribe.sprite;
 
 	this.anchor.set( 0, 1 );
 }

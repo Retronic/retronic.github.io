@@ -1,5 +1,8 @@
 function IslandMainPanel( game ) {
 	IslandPanel.call( this, game );
+
+	this.enter = game.input.keyboard.addKey( Phaser.Keyboard.ENTER );
+	this.enter.onDown.add( Universe.endTurn, Universe );
 }
 
 IslandMainPanel.prototype = Object.create( IslandPanel.prototype );
@@ -92,4 +95,9 @@ IslandMainPanel.prototype.onBuild = function() {
 		progress: 0
 	};
 	scene.switchPanel( IslandMainPanel ).select( this.island );
+}
+
+IslandMainPanel.prototype.destroy = function() {
+	this.enter.onDown.remove( Universe.endTurn, Universe );
+	IslandPanel.prototype.destroy.call( this );
 }

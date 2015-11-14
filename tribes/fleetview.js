@@ -9,7 +9,7 @@ function FleetView( game, fleet ) {
 	this.button = new Phaser.Button( game, 0, 0, 'fleet', this.onButtonClick, this );
 	this.button.anchor.set( 0.5, 0.5 );
 	this.button.smoothed = false;
-	this.button.frame = fleet.tribe.flag;
+	this.button.frame = fleet.tribe.sprite;
 	this.addChild( this.button );
 
 	this.onClick = new Phaser.Signal();

@@ -2,12 +2,22 @@ function FleetPanel( game ) {
 	Panel.call( this, game );
 
 	this.fleet = null;
+
+	this.enter = game.input.keyboard.addKey( Phaser.Keyboard.ENTER );
+	this.enter.onDown.add( Universe.endTurn, Universe );
+
+	this.esc = game.input.keyboard.addKey( Phaser.Keyboard.ESC );
+	this.esc.onDown.add( this.selectHome, this );
 }
 
 FleetPanel.prototype = Object.create( Panel.prototype );
 FleetPanel.prototype.constructor = FleetPanel;
 
 FleetPanel.prototype.destroy = function() {
+
+	this.enter.onDown.remove( Universe.endTurn, Universe );
+	this.esc.onDown.remove( this.selectHome, this );
+
 	if (this.fleet) {
 		this.fleet.onChanged.remove( this.onFleetChanged, this );
 	}
@@ -129,4 +139,8 @@ FleetPanel.prototype.onFleetChanged = function() {
 	if (!this.fleet.isAlive) {
 		scene.switchPanel( IslandMainPanel ).select( this.fleet.to );
 	}
+}
+
+FleetPanel.prototype.selectHome = function() {
+	scene.switchPanel( IslandMainPanel ).select( this.fleet.from );
 }

@@ -5,7 +5,7 @@ function Tribe( params ) {
 	params = params || {};
 
 	this.name = params.name || 'Savages';
-	this.flag = params.flag || 0;
+	this.sprite = params.sprite || 0;
 	this.color = params.color || 0xFFFFFF;
 
 	// Map of islands which belong to this tribe
@@ -34,12 +34,12 @@ function Tribe( params ) {
 	this.attackLevel = 0;
 }
 
-Tribe.NORSE	= function() { return new Tribe( {name: 'Norse', flag: 0, color: 0xff4040} ) };
-Tribe.SLAVS	= function() { return new Tribe( {name: 'Slavs', flag: 1, color: 0xbb40ff} ) };
-Tribe.CELTS	= function() { return new Tribe( {name: 'Celts', flag: 2, color: 0x40bbff} ) };
-Tribe.ARABS	= function() { return new Tribe( {name: 'Arabs', flag: 3, color: 0xffff40} ) };
-
-Tribe.ALL	= function() { return [Tribe.NORSE(), Tribe.SLAVS(), Tribe.CELTS(), Tribe.ARABS()] };
+Tribe.ALL = [
+	{name: 'Dani',	sprite: 0, color: 0xff4040},
+	{name: 'Rus',	sprite: 1, color: 0xbb40ff},
+	{name: 'Nor',	sprite: 2, color: 0x40bbff},
+	{name: 'Gothi',	sprite: 3, color: 0xffff40}
+];
 
 Tribe.State = {
 	NOT_GROWN		: "not grown",
@@ -230,12 +230,18 @@ Tribe.prototype.removeIsland = function( island ) {
 	delete this.islands[island.id];
 
 	if (this.home == island) {
-		var ids = [];
+
+		var max = 0;
+		this.home = null;
 		for (var i in this.islands) {
-			ids.push( i );
+			var isl = this.islands[i];
+			if (isl.population > max) {
+				this.home = isl;
+				max = isl.population;
+			}
 		}
-		if (ids.length) {
-			this.home = this.islands[ids[Math.floor(Math.random() * ids.length)]];
+
+		if (this.home) {
 			this.home.onChanged.dispatch();
 		}
 	}

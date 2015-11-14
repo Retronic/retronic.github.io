@@ -141,7 +141,7 @@ IslandPanel.prototype.select = function( island, refresh ) {
 
 	this.flotilla.visible = island.tribe == Universe.player && island.ship;
 	if (island.tribe) {
-		this.flotilla.frame = island.tribe.flag;
+		this.flotilla.frame = island.tribe.sprite;
 	}
 
 	this.layout();
