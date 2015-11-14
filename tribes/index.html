@@ -43,13 +43,13 @@
             margin: 0;
         }
         canvas {
-  image-rendering: optimizeSpeed;             /* Older versions of FF          */
-  image-rendering: -moz-crisp-edges;          /* FF 6.0+                       */
-  image-rendering: -webkit-optimize-contrast; /* Safari                        */
-  image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
-  image-rendering: pixelated;                 /* Awesome future-browsers       */
-  -ms-interpolation-mode: nearest-neighbor;   /* IE                            */
-}
+			image-rendering: optimizeSpeed;             /* Older versions of FF          */
+			image-rendering: -moz-crisp-edges;          /* FF 6.0+                       */
+			image-rendering: -webkit-optimize-contrast; /* Safari                        */
+			image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
+			image-rendering: pixelated;                 /* Awesome future-browsers       */
+			-ms-interpolation-mode: nearest-neighbor;   /* IE                            */
+		}
     </style>
 </head>
 <body>
@@ -78,6 +78,7 @@ function preload() {
 	game.load.image( 'dashed', 'assets/dashed.png' );
 	game.load.image( 'blood', 'assets/blood.png' );
 	game.load.spritesheet( 'shard', 'assets/shard.png', 128, 128 );
+	game.load.spritesheet( 'sound', 'assets/sound.png', 32, 32 );
 
 	game.load.bitmapFont( 'font5', 'assets/font5.png', 'assets/font5.xml' );
 	game.load.bitmapFont( 'font8', 'assets/font8.png', 'assets/font8.xml' );

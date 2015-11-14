@@ -32,6 +32,9 @@ GameScene.prototype.createChildren = function () {
 	this.gamelog.x = Panel.MARGIN;
 	this.gamelog.y = Panel.MARGIN;
 	this.add( this.gamelog );
+
+	this.soundBtn = game.add.button( 0, 0, 'sound', this.onSound, this, 0, 1, 0, 0, this );
+	game.sound.mute = localStorage.muted || false;
 }
 
 GameScene.prototype.layout = function () {
@@ -85,4 +88,8 @@ GameScene.prototype.step = function () {
 	case Tribe.State.PROCESSING:
 		break;
 	}
+}
+
+GameScene.prototype.onSound = function () {
+	localStorage.muted = (game.sound.mute = !game.sound.mute);
 }
