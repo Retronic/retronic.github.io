@@ -9,6 +9,8 @@ GameScene.prototype.init = function () {
 	this.switchPanel( IslandMainPanel ).select( Universe.player.home );
 	this.map.updateFieldOfView( Universe.player );
 
+	game.sound.mute = (localStorage.muted == 'true');
+
 	var music = game.add.audio( 'music' );
 	music.onDecoded.add( function() {
 		music.loopFull();
@@ -34,13 +36,14 @@ GameScene.prototype.createChildren = function () {
 	this.add( this.gamelog );
 
 	this.soundBtn = game.add.button( 0, 0, 'sound', this.onSound, this, 0, 1, 0, 0, this );
-	game.sound.mute = localStorage.muted || false;
 }
 
 GameScene.prototype.layout = function () {
 
 	this.tribePanel.resize( 200, 100 );
 	this.tribePanel.x = this.reqWidth - this.tribePanel.width;
+
+	this.soundBtn.x = this.reqWidth - this.soundBtn.width;
 
 	this.layoutPanel();
 

@@ -232,7 +232,11 @@ Island.prototype.getProduction = function() {
 }
 
 Island.prototype.getScience = function() {
-	var science = Math.floor( this.population * this.population / this.size );
+	var rate = this.population / this.size;
+	var science = Math.floor( this.population * rate*rate );
+	if (this.has( Task.MONUMENT )) {
+		science *= 1.5;
+	}
 	return science;
 }
 
