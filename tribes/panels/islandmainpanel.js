@@ -59,7 +59,7 @@ IslandMainPanel.prototype.select = function( island, refresh ) {
 		this.construct.visible = 
 		this.taskLabel.visible = true;
 		this.migrate.visible = island.canLaunch();
-		this.build.visible = island.has( Task.SHIPYARD ) && !island.ship && (island.curTask == null || (island.curTask.name != Task.FLOTILLA && island.curTask.name != Task.SEIGE));
+		this.build.visible = island.has( Task.SHIPYARD ) && !island.ship && (island.curTask == null || (island.curTask.name != Task.FLOTILLA && island.curTask.name != Task.SIEGE));
 
 		if (island.curTask) {
 			var name = island.curTask.name;
@@ -91,7 +91,7 @@ IslandMainPanel.prototype.onTask = function() {
 
 IslandMainPanel.prototype.onBuild = function() {
 	this.island.curTask = {
-		name: this.island.has( Task.WORKSHOP ) ? Task.SEIGE : Task.FLOTILLA,
+		name: this.island.has( Task.WORKSHOP ) ? Task.SIEGE : Task.FLOTILLA,
 		progress: 0
 	};
 	scene.switchPanel( IslandMainPanel ).select( this.island );

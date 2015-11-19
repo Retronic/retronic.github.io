@@ -72,12 +72,19 @@ function IslandView( game, island ) {
 		this.flotilla.visible = false;
 	}
 
-	this.name = game.add.bitmapText( 0, 10, "font8", island.name, 8, this );
-	this.name.smoothed = false;
-	this.name.tint = island.tribe ? island.tribe.color : 0xFFFFFF;
+	this.task = game.add.bitmapText( 0, 0, "font8", "", 8, this );
+	this.task.smoothed = false;
+	this.task.visible = false;
+
+	this.name = game.add.bitmapText( 0, 12, "font8", island.name, 8, this );
+	this.name.smoothed = false;	
 	this.name.x = Math.floor( -this.name.textWidth / 2 );
 
+	this.name.tint = this.task.tint = island.tribe ? island.tribe.color : 0xFFFFFF;
+
 	this.visible = false;
+
+	this.showInfo = false;
 }
 
 IslandView.prototype = Object.create( Phaser.Group.prototype );
@@ -102,7 +109,7 @@ IslandView.prototype.refresh = function() {
 
 	var island = this.data;
 
-	this.name.tint = island.tribe ? island.tribe.color : 0xFFFFFF;
+	this.name.tint = this.task.tint = island.tribe ? island.tribe.color : 0xFFFFFF;
 
 	if (island.tribe && island.tribe.home == island) {
 		this.flag.visible = true;
@@ -116,5 +123,26 @@ IslandView.prototype.refresh = function() {
 		this.flotilla.frame = island.tribe.sprite;
 	} else {
 		this.flotilla.visible = false;
+	}
+}
+
+IslandView.prototype.updateMode = function( showInfo ) {
+	if (this.showInfo != showInfo) {
+		this.showInfo = showInfo;
+
+		if (showInfo) {
+			this.name.text = Math.round(this.data.population) + "/" + this.data.size;
+
+			if (this.data.tribe == Universe.player) {
+				this.task.text = this.data.curTask ? this.data.curTask.name : " ";
+				this.task.x = Math.floor( -this.task.textWidth / 2 );
+			}
+			this.task.visible = true;
+		} else {
+			this.name.text = this.data.name;
+			this.task.visible = false;
+		}
+
+		this.name.x = Math.floor( -this.name.textWidth / 2 );
 	}
 }

@@ -17,13 +17,13 @@ function AssaultPopUp( game, fleet ) {
 	this.name.text = fleet.to.name;
 	this.name.tint = fleet.to.tribe.color;
 
-	if (fleet.seige || fleet.to.has( Task.CASTLE )) {
+	if (fleet.siege || fleet.to.has( Task.CASTLE )) {
 		game.time.events.add( Phaser.Timer.QUARTER, this.doAOE, this );	
 	} else {
 		game.time.events.add( Phaser.Timer.QUARTER, this.killOne, this );
 	}
 
-	this.resize( this.beach.width + Panel.LINE*2, this.beach.height + Panel.LINE*2 );
+	this.resize( this.beach.width + Panel.MARGIN*2, this.beach.height + Panel.MARGIN*2 );
 }
 
 AssaultPopUp.prototype = Object.create( PopUp.prototype );
@@ -33,7 +33,7 @@ AssaultPopUp.prototype.createChildren = function() {
 
 	PopUp.prototype.createChildren.call( this );
 
-	this.sky = game.add.tileSprite( Panel.LINE, Panel.LINE, 800, 60, 'sky', null, this );
+	this.sky = game.add.tileSprite( Panel.MARGIN, Panel.MARGIN, 800, 60, 'sky', null, this );
 	this.sky.autoScroll( Math.random() * 20 - 10, 0 );
 
 	var bg;
@@ -53,7 +53,7 @@ AssaultPopUp.prototype.createChildren = function() {
 	default:
 		bg = 'beach_normal';
 	}
-	this.beach = game.add.image( Panel.LINE, Panel.LINE, bg, null, this );
+	this.beach = game.add.image( Panel.MARGIN, Panel.MARGIN, bg, null, this );
 	this.beach.smoothed = false;
 
 	this.attackers = game.add.group( this );
@@ -78,25 +78,25 @@ AssaultPopUp.prototype.layout = function() {
 	for (var i=0; i < this.attackers.length; i++) {
 		var warrior = this.attackers.children[i];
 		warrior.x = margin + this.gap * i;
-		warrior.y = this.reqHeight - Panel.LINE - Math.floor( Math.random() * 80 );
+		warrior.y = this.reqHeight - Panel.MARGIN - Math.floor( Math.random() * 80 );
 	}
 
 	this.defenders.x = this.reqWidth;
 	for (var i=0; i < this.defenders.length; i++) {
 		var warrior = this.defenders.children[i];
 		warrior.x = margin + this.gap * i;
-		warrior.y = this.reqHeight - Panel.LINE - Math.floor( Math.random() * 80 );
+		warrior.y = this.reqHeight - Panel.MARGIN - Math.floor( Math.random() * 80 );
 	}
 
 	this.attackers.sort( 'y', Phaser.Group.SORT_ASCENDING );
 	this.defenders.sort( 'y', Phaser.Group.SORT_ASCENDING );
 
 	this.name.x = Math.floor( (this.reqWidth - this.name.width) / 2 );
-	this.name.y = Panel.LINE * 2;
+	this.name.y = Panel.LINE + Panel.MARGIN;
 }
 
 AssaultPopUp.prototype.doAOE = function() {
-	if (this.fleet.seige) {
+	if (this.fleet.siege) {
 		var damage = Math.min( this.fleet.to.population, 1 + Math.floor( (Math.random() + Math.random()) * 5 ) );
 		for (var i=0; i < damage; i++) {
 			var warrior = null;
@@ -175,7 +175,7 @@ AssaultPopUp.prototype.assaultOver = function( attackersWin ) {
 		if (this.fleet.tribe == Universe.player) {
 			gamelog.message( 4, 'You have conquered ' + island.name, callback, this );
 		} else {
-			gamelog.message( 5, this.fleet.tribe.name + 'have conquered ' + island.name, callback, this );
+			gamelog.message( 5, this.fleet.tribe.name + ' have conquered ' + island.name, callback, this );
 		}
 	} else {
 		if (this.fleet.tribe == Universe.player) {
@@ -209,7 +209,7 @@ AssaultPopUp.attack = function( fleet ) {
 		b *= 2;
 	}
 	if (fleet.to.has( Task.CASTLE )) {
-		b *= 5;
+		b *= 4;
 	} else if (fleet.to.has( Task.WALLS )) {
 		b *= 3;
 	} else if (fleet.to.has( Task.OUTPOST )) {
@@ -222,7 +222,7 @@ AssaultPopUp.resolve = function( fleet ) {
 	var attackers = Math.floor( fleet.size );
 	var defenders = Math.floor( fleet.to.population );
 
-	if (fleet.seige) {
+	if (fleet.siege) {
 		var damage = 1 + Math.floor( (Math.random() + Math.random()) * 5 );
 		defenders = Math.max( 0, defenders - damage );
 	}

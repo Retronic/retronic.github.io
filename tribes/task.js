@@ -9,7 +9,7 @@ var Task = {
 	MONUMENT	: "monument",
 
 	FLOTILLA	: "flotilla",
-	SEIGE		: "seige flotilla"
+	SIEGE		: "siege flotilla"
 };
 
 Task.Buildings = [Task.OUTPOST, Task.SHIPYARD, Task.WALLS, Task.CASTLE, Task.STOREHOUSE, Task.FORGE, Task.WORKSHOP, Task.MONUMENT];
@@ -53,7 +53,7 @@ Task[Task.FORGE] = {
 Task[Task.WORKSHOP] = {
 	cost	: 1000,
 	reqs	: [Task.FORGE, Task.SHIPYARD],
-	info	: "Workshop enables seige ship\nconstruction on an island"
+	info	: "Workshop enables siege ship\nconstruction on an island"
 };
 
 Task[Task.MONUMENT] = {
@@ -67,7 +67,7 @@ Task[Task.FLOTILLA] = {
 	info	: ""
 };
 
-Task[Task.SEIGE] = {
+Task[Task.SIEGE] = {
 	cost	: 600,
 	info	: ""
 };

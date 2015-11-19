@@ -58,34 +58,16 @@ ConstructPanel.prototype.select = function( island, refresh ) {
 	for (var b in Task.Buildings) {
 		var name = Task.Buildings[b];
 
-		// Checking if the island already has this building
-		if (!this.island.has( name )) {
-
-			var canConstruct = true;
-			// Checking requirements for this building
-			for (var r in Task[name].reqs) {
-				if (!this.island.has( Task[name].reqs[r] )) {
-					canConstruct = false;
-					break;
-				}
+		if (this.island.canConstruct( name )) {
+			var cap = name[0].toUpperCase() + name.substr( 1 );
+			var btn = new ProgressBar( game, cap, this.onBuilding, this );
+			if (island.curTask && island.curTask.name == name) {
+				btn.maxValue = Task[name].cost;
+				btn.value = island.curTask.progress;
 			}
-
-			var techReq = island.tribe.techPlan.plan.indexOf( name );
-			if (techReq != -1 && techReq+2 > island.tribe.tech) {
-				canConstruct = false;
-			}
-
-			if (canConstruct) {
-				var cap = name[0].toUpperCase() + name.substr( 1 );
-				var btn = new ProgressBar( game, cap, this.onBuilding, this );
-				if (island.curTask && island.curTask.name == name) {
-					btn.maxValue = Task[name].cost;
-					btn.value = island.curTask.progress;
-				}
-				btn.name = name;
-				btn.tooltip = Task[name].info;
-				this.Task.add( btn );
-			}
+			btn.name = name;
+			btn.tooltip = Task[name].info;
+			this.Task.add( btn );
 		}
 	}
 

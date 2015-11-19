@@ -103,6 +103,24 @@ Tribe.prototype.process = function() {
 				assault = null;
 			}
 		}
+	} else {
+		if (this == Universe.player) {
+			if (this.home == null) {
+				PopUp.show( new GameOverPopUp( game, false ) );
+			} else {
+				var allWiped = true;
+				for (var t in Universe.tribes) {
+					var tribe = Universe.tribes[t];
+					if (tribe != this && tribe.home != null) {
+						allWiped = false;
+						break;
+					}
+				}
+				if (allWiped) {
+					PopUp.show( new GameOverPopUp( game, true ) );
+				}
+			}
+		}
 	}
 
 	if (this == Universe.player) {
@@ -132,70 +150,86 @@ Tribe.prototype.launch = function( tribe, from, to, size ) {
 
 Tribe.prototype.think = function() {
 
-	var ids1 = [];
-	for (var i in this.islands) {
-		if (this.islands[i].canLaunch()) {
-			ids1.push( i );
-		}
-	}
-
-	var ids2 = [];
-	for (var i in this.visibleIslands) {
-		if (this.visibleIslands[i].tribe != this) {
-			ids2.push( i );
-		}
-	}
-
-	if (ids1.length && ids2.length) {
-
-		var weights = [];
-		for (var i=0; i < ids1.length; i++) {
-			weights.push( this.islands[ids1[i]].population );
-		}
-		var src = this.islands[ids1[weighted( weights )]]; 
-
-		weights = [];
-		for (var i=0; i < ids2.length; i++) {
-			var isl = this.visibleIslands[ids2[i]];
-			var w = isl.size * isl.size;
-			if (isl.tribe != null) {
-				w *= src.population/2 / isl.population;
-				if (isl.has( Task.OUTPOST )) {
-					w /= 1.5;
-				}
-				if (isl.resource == Island.Resources.CLIFFS) {
-					w /= 1.5;
-				}
-			}
-			if (isl.resource) {
-				w *= 2;
-			}
-			w /= Universe.distance( src, isl );
-			weights.push( w );
-		}
-		var dst = this.visibleIslands[ids2[weighted( weights )]];
-
-		var limit = Math.min( Math.floor(src.population / 2), dst.tribe == this ? dst.size - dst.population : dst.size );
-		this.launch( this, src, dst, limit );
-	}
+	var urge = Object.keys( this.visibleIslands ).length / Object.keys( this.islands ).length;
 
 	for (var i in this.islands) {
 		var island = this.islands[i];
+
+		if (island.canLaunch()) {
+			var ids2 = [];
+			for (var i in this.visibleIslands) {
+				if (this.visibleIslands[i].tribe != this) {
+					ids2.push( i );
+				}
+			}
+
+			if (ids2.length) {
+				weights = [];
+				for (var i=0; i < ids2.length; i++) {
+					var isl = this.visibleIslands[ids2[i]];
+					var w = isl.size * isl.size;
+					if (isl.tribe != null) {
+						w *= island.population/2 / isl.population;
+						if (isl.has( Task.CASTLE )) {
+							w /= 5;
+						} else if (isl.has( Task.WALLS )) {
+							w /= 3;
+						} else if (isl.has( Task.OUTPOST )) {
+							w /= 1.5;
+						}
+						if (isl.resource == Island.Resources.CLIFFS) {
+							w /= 1.5;
+						}
+					}
+					if (isl.resource) {
+						w *= 2;
+					}
+					w /= Universe.distance( island, isl );
+					weights.push( w );
+				}
+				var dst = this.visibleIslands[ids2[weighted( weights )]];
+
+				var limit = Math.min( Math.floor(island.population / 2), dst.tribe == this ? dst.size - dst.population : dst.size );
+				this.launch( this, island, dst, limit );
+			}
+		}
+
 		if (island.curTask == null) {
 			if (!island.has( Task.OUTPOST )) {
 				island.curTask = {
 					name		: Task.OUTPOST,
 					progress	: 0
 				}
-			} else if (!island.has( Task.SHIPYARD )) {
-				island.curTask = {
-					name		: Task.SHIPYARD,
-					progress	: 0
+			} else {
+				var tasks = [];
+				var weights = [];
+				for (var b in Task.Buildings) {
+					var building = Task.Buildings[b];
+					if (island.canConstruct( building )) {
+						tasks.push( building );
+						switch (building) {
+						case Task.SHIPYARD:
+							weights.push( urge );
+							break;
+						case Task.STOREHOUSE:
+							weights.push( island.resource == Island.Resources.GAME ? 1 : island.size / island.population );
+							break;
+						default:
+							weights.push( 1 );
+						}
+					}
 				}
-			} else if (!island.ship) {
-				island.curTask = {
-					name		: Task.FLOTILLA,
-					progress	: 0
+				if (island.has( Task.SHIPYARD ) && !island.ship) {
+					tasks.push( island.has( Task.WORKSHOP ) ? Task.SIEGE : Task.FLOTILLA );
+					weights.push( urge );
+				}
+
+				if (tasks.length) {
+					var index = weighted( weights );
+					island.curTask = {
+						name		: tasks[index],
+						progress	: 0
+					}
 				}
 			}
 		}
@@ -243,6 +277,8 @@ Tribe.prototype.removeIsland = function( island ) {
 
 		if (this.home) {
 			this.home.onChanged.dispatch();
+		} else {
+			gamelog.message( this == Universe.player ? 5 : 4, this.name + " have been wiped out" );
 		}
 	}
 

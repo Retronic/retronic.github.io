@@ -56,8 +56,7 @@ FleetPanel.prototype.layout = function() {
 
 	var m = this.reqWidth - Panel.MARGIN*2;
 	var p = this.size.y + this.name.textHeight + Panel.MARGIN;
-	this.bg.beginFill( 0xFFFFFF );
-	this.bg.drawRect( Panel.MARGIN, p, m, m );
+	this.drawBevel( Panel.MARGIN, p, m, m, Panel.LINE, true );
 
 	this.ocean.x = Panel.MARGIN + Panel.LINE;
 	this.ocean.y = p + Panel.LINE;
@@ -104,7 +103,7 @@ FleetPanel.prototype.select = function( fleet, refresh ) {
 	this.fleet = fleet;
 	this.fleet.onChanged.add( this.onFleetChanged, this );
 
-	this.name.text = fleet.tribe.name + (fleet.seige ? " seige flotilla" : " flotilla");
+	this.name.text = fleet.tribe.name + (fleet.siege ? " siege flotilla" : " flotilla");
 	this.name.tint = fleet.tribe.color;
 
 	this.size.text = "size: " + fleet.size;

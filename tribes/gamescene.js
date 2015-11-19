@@ -54,9 +54,9 @@ GameScene.prototype.layout = function () {
 
 GameScene.prototype.layoutPanel = function () {
 	if (this.panel) {
-		this.panel.resize( this.tribePanel.width, this.reqHeight - this.tribePanel.height + Panel.LINE );
+		this.panel.resize( this.tribePanel.width, this.reqHeight - this.tribePanel.height );
 		this.panel.x = this.reqWidth - this.panel.width;
-		this.panel.y = this.tribePanel.bottom - Panel.LINE;
+		this.panel.y = this.tribePanel.bottom;
 	}
 }
 

@@ -1,12 +1,14 @@
 function Tooltip( game ) {
-	Panel.call( this, game );
+	View.call( this, game );
 }
 
-Tooltip.prototype = Object.create( Panel.prototype );
+Tooltip.prototype = Object.create( View.prototype );
 Tooltip.prototype.constructor = Tooltip;
 
 Tooltip.prototype.createChildren = function() {
-	Panel.prototype.createChildren.call( this );
+	View.prototype.createChildren.call( this );
+
+	this.bg = game.add.graphics( 0, 0, this );
 
 	this.tfTitle = game.add.bitmapText( Panel.MARGIN, Panel.MARGIN, 'font12', "", 12, this );
 	this.tfTitle.smoothed = false;
@@ -17,7 +19,13 @@ Tooltip.prototype.createChildren = function() {
 }
 
 Tooltip.prototype.layout = function() {
-	Panel.prototype.layout.call( this );
+	View.prototype.layout.call( this );
+
+	this.bg.clear();
+	this.bg.beginFill( 0xFFFFFF );
+	this.bg.drawRect( 0, 0, this.reqWidth, this.reqHeight );
+	this.bg.beginFill( 0x222222 );
+	this.bg.drawRect( 2, 2, this.reqWidth-4, this.reqHeight-4 );
 
 	this.tfText.y = this.tfTitle.y + this.tfTitle.height + Panel.LINE;
 }

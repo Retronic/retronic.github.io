@@ -46,9 +46,8 @@ IslandPanel.prototype.layout = function() {
 
 	var m = this.reqWidth - Panel.MARGIN*2;
 	var p = this.name.bottom + Panel.MARGIN;
-	this.bg.beginFill( 0xFFFFFF );
-	this.bg.drawRect( Panel.MARGIN, p, m, m );
 	this.sectionTop = p + m;
+	this.drawBevel( Panel.MARGIN, p, m, m, Panel.LINE, true );
 
 	this.ocean.x = Panel.MARGIN + Panel.LINE;
 	this.ocean.y = p + Panel.LINE;
@@ -169,7 +168,7 @@ IslandPanel.prototype.showBiomeTooltip = function() {
 		Tooltip.show( "High cliffs of this island provide defense bonus", "Cliffs" );
 		break;
 	case Island.Resources.STONE:
-		Tooltip.show( "Stone of this island allows faster Task construction", "Stone" );
+		Tooltip.show( "Stone of this island allows faster buildings construction", "Stone" );
 		break;
 	}
 }

@@ -23,6 +23,11 @@ function MapView( game ) {
 	this.miny = 0;
 	this.maxx = Universe.SIZE;
 	this.maxy = Universe.SIZE;
+
+	game.input.keyboard.addKeyCapture( Phaser.Keyboard.SHIFT );
+	this.ctrl = game.input.keyboard.addKey( Phaser.Keyboard.SHIFT );
+	this.ctrl.onDown.add( this.onCtrlDown, this );
+	this.ctrl.onUp.add( this.onCtrlUp, this );
 }
 
 MapView.prototype = Object.create( View.prototype );
@@ -203,5 +208,17 @@ MapView.prototype.adjustWindow = function( tribe ) {
 		var cx = Math.floor( (this.reqWidth - (this.minx + this.maxx) * this.zoom) / 2 );
 		var cy = Math.floor( (this.reqHeight - (this.miny + this.maxy) * this.zoom) / 2 );
 		this.tween = game.add.tween( this.objects ).to( {x: cx, y: cy}, 1000, Phaser.Easing.Quadratic.InOut, true );
+	}
+}
+
+MapView.prototype.onCtrlDown = function() {
+	for (var i in this.islands) {
+		this.islands[i].updateMode( true );
+	}
+}
+
+MapView.prototype.onCtrlUp = function( tribe ) {
+	for (var i in this.islands) {
+		this.islands[i].updateMode( false );
 	}
 }

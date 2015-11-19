@@ -43,7 +43,7 @@ Island.shard = null;
 
 Island.prototype.grow = function() {
 	// If the island is uninhabited, it doesn't grow/change
-	if (this.tribe) {
+	if (this.tribe != null) {
 		var changed = false;
 
 		if (this.has( Task.OUTPOST )) {
@@ -66,7 +66,7 @@ Island.prototype.grow = function() {
 
 		if (this.curTask) {
 			var prod = this.getProduction();
-			if ((this.curTask.name == Task.FLOTILLA || this.curTask.name == Task.SEIGE) && this.resource == Island.Resources.TIMBER) {
+			if ((this.curTask.name == Task.FLOTILLA || this.curTask.name == Task.SIEGE) && this.resource == Island.Resources.TIMBER) {
 				prod *= 1.5;
 			}
 			if (this.curTask.name != Task.FLOTILLA && this.resource == Island.Resources.STONE) {
@@ -79,7 +79,7 @@ Island.prototype.grow = function() {
 						scene.switchPanel( IslandMainPanel ).select( this );
 					}, this );
 				}
-				if (this.curTask.name == Task.FLOTILLA || this.curTask.name == Task.SEIGE) {
+				if (this.curTask.name == Task.FLOTILLA || this.curTask.name == Task.SIEGE) {
 					this.ship = true;
 					this.onChanged.dispatch();
 				} else {
@@ -221,6 +221,26 @@ Island.prototype.has = function( building ) {
 
 Island.prototype.canLaunch = function() {
 	return this.population >= 2 && this.ship;
+}
+
+Island.prototype.canConstruct = function( building ) {
+	if (this.has( building )) {
+		return false;
+	} else {
+		var reqs = Task[building].reqs;
+		for (var r in reqs) {
+			if (!this.has( reqs[r] )) {
+				return false;
+			}
+		}
+
+		var techReq = this.tribe.techPlan.plan.indexOf( building );
+		if (techReq != -1 && techReq+2 > this.tribe.tech) {
+			return false;
+		} else {
+			return true;
+		}
+	}
 }
 
 Island.prototype.getProduction = function() {
