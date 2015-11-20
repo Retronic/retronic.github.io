@@ -28,13 +28,13 @@ Panel.prototype.mapClicked = function( object ) {
 Panel.prototype.drawBevel = function( x, y, width, height, size, reverse, light, dark ) {
 
 	size = size || Panel.BEVEL;
-	light = light || 0.3;
+	light = light || 0.5;
 	dark = dark || 0.5;
 
 	if (reverse) {
 		this.bevel.beginFill( 0x110011, dark );
 	} else {
-		this.bevel.beginFill( 0xFFFFEE, light );
+		this.bevel.beginFill( 0x110011, light );
 	}
 	this.bevel.moveTo( x, y );
 	this.bevel.lineTo( x+width, y );
@@ -47,7 +47,7 @@ Panel.prototype.drawBevel = function( x, y, width, height, size, reverse, light,
 	if (!reverse) {
 		this.bevel.beginFill( 0x110011, dark );
 	} else {
-		this.bevel.beginFill( 0xFFFFEE, light );
+		this.bevel.beginFill( 0x110011, light );
 	}
 	this.bevel.moveTo( x+width, y );
 	this.bevel.lineTo( x+width-size, y+size );

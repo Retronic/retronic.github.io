@@ -38,7 +38,7 @@ PopUp.prototype.layout = function() {
 	this.y = Math.floor( (game.height - this.height) / 2 );
 
 	this.blocker.clear();
-	this.blocker.beginFill( 0x000000, 0.2 );
+	this.blocker.beginFill( 0x000000, 0 );
 	this.blocker.drawRect( -this.x, -this.y, game.width, game.height );
 }
 

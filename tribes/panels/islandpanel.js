@@ -47,13 +47,13 @@ IslandPanel.prototype.layout = function() {
 	var m = this.reqWidth - Panel.MARGIN*2;
 	var p = this.name.bottom + Panel.MARGIN;
 	this.sectionTop = p + m;
-	this.drawBevel( Panel.MARGIN, p, m, m, Panel.LINE, true );
+	this.drawBevel( Panel.MARGIN, p, m, m, Panel.BEVEL, true );
 
-	this.ocean.x = Panel.MARGIN + Panel.LINE;
-	this.ocean.y = p + Panel.LINE;
+	this.ocean.x = Panel.MARGIN + Panel.BEVEL;
+	this.ocean.y = p + Panel.BEVEL;
 	this.ocean.width =
 	this.ocean.height = 
-		m - Panel.LINE*2;
+		m - Panel.BEVEL*2;
 
 	this.image.x = this.reqWidth / 2;
 	this.image.y = p + m/2;

@@ -56,12 +56,12 @@ FleetPanel.prototype.layout = function() {
 
 	var m = this.reqWidth - Panel.MARGIN*2;
 	var p = this.size.y + this.name.textHeight + Panel.MARGIN;
-	this.drawBevel( Panel.MARGIN, p, m, m, Panel.LINE, true );
+	this.drawBevel( Panel.MARGIN, p, m, m, Panel.BEVEL, true );
 
-	this.ocean.x = Panel.MARGIN + Panel.LINE;
-	this.ocean.y = p + Panel.LINE;
-	this.ocean.width = m - Panel.LINE*2;
-	this.ocean.height = m - Panel.LINE*2;
+	this.ocean.x = Panel.MARGIN + Panel.BEVEL;
+	this.ocean.y = p + Panel.BEVEL;
+	this.ocean.width = m - Panel.BEVEL*2;
+	this.ocean.height = m - Panel.BEVEL*2;
 
 	if (this.image) {
 		this.image.x = this.reqWidth / 2;

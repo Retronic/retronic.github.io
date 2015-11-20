@@ -21,7 +21,7 @@ ProgressBar.prototype.createChildren = function() {
 	RGButton.prototype.createChildren.call( this );
 
 	this.fill = game.add.graphics( Panel.LINE, Panel.LINE, this );
-	this.fill.beginFill( 0xcc6622 );
+	this.fill.beginFill( 0xee8822 );
 	this.fill.drawRect( 0, 0, 100, 100 );
 	this.swap( this.fill, this._label );
 

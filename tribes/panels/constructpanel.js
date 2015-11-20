@@ -71,6 +71,17 @@ ConstructPanel.prototype.select = function( island, refresh ) {
 		}
 	}
 
+	if (island.curTask && island.has( Task.SHIPYARD ) && !island.ship) {
+		var flotilla = island.has( Task.WORKSHOP ) ? Task.SIEGE : Task.FLOTILLA;
+		var btn = new ProgressBar( game, flotilla[0].toUpperCase() + flotilla.substr( 1 ), this.onBuilding, this );
+		if (island.curTask && island.curTask.name == flotilla) {
+			btn.maxValue = Task[Task.FLOTILLA].cost;
+			btn.value = island.curTask.progress;
+		}
+		btn.name = flotilla;
+		this.Task.add( btn );
+	}
+
 	this.layout();
 }
 

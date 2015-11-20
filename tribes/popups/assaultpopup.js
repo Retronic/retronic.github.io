@@ -14,8 +14,8 @@ function AssaultPopUp( game, fleet ) {
 		this.defenders.add( warrior );
 	}
 
-	this.name.text = fleet.to.name;
-	this.name.tint = fleet.to.tribe.color;
+//	this.name.text = fleet.to.name;
+//	this.name.tint = fleet.to.tribe.color;
 
 	if (fleet.siege || fleet.to.has( Task.CASTLE )) {
 		game.time.events.add( Phaser.Timer.QUARTER, this.doAOE, this );	
@@ -60,8 +60,23 @@ AssaultPopUp.prototype.createChildren = function() {
 	this.defenders = game.add.group( this );
 	this.defenders.scale.x = -1;
 
-	this.name = game.add.bitmapText( 0, 0, 'font12', "", 12, this );
+	this.name = game.add.bitmapText( 0, 0, 'font12', this.fleet.to.name, 12, this );
+	this.name.tint = this.fleet.to.tribe.color;
 	this.name.smoothed = false;
+
+	this.atkBonus = game.add.bitmapText( 0, 0, 'font8', this.fleet.siege ? "siege flotilla" : "", 8, this );
+	this.atkBonus.smoothed = false;
+
+	var defBonus = "";
+	if (this.fleet.to.has( Task.CASTLE )) {
+		defBonus = "castle";
+	} else if (this.fleet.to.has( Task.WALLS )) {
+		defBonus = "walls";
+	} else if (this.fleet.to.has( Task.OUTPOST )) {
+		defBonus = "outpost";
+	}
+	this.defBonus = game.add.bitmapText( 0, 0, 'font8', defBonus, 8, this );
+	this.defBonus.smoothed = false;
 }
 
 AssaultPopUp.prototype.layout = function() {
@@ -93,6 +108,9 @@ AssaultPopUp.prototype.layout = function() {
 
 	this.name.x = Math.floor( (this.reqWidth - this.name.width) / 2 );
 	this.name.y = Panel.LINE + Panel.MARGIN;
+
+	this.atkBonus.x = this.atkBonus.y = this.defBonus.y = Panel.LINE + Panel.MARGIN;
+	this.defBonus.x = this.reqWidth - Panel.LINE - Panel.MARGIN - this.defBonus.width;
 }
 
 AssaultPopUp.prototype.doAOE = function() {

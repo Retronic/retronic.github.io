@@ -59,7 +59,7 @@ IslandMainPanel.prototype.select = function( island, refresh ) {
 		this.construct.visible = 
 		this.taskLabel.visible = true;
 		this.migrate.visible = island.canLaunch();
-		this.build.visible = island.has( Task.SHIPYARD ) && !island.ship && (island.curTask == null || (island.curTask.name != Task.FLOTILLA && island.curTask.name != Task.SIEGE));
+		this.build.visible = island.has( Task.SHIPYARD ) && !island.ship && island.curTask == null;
 
 		if (island.curTask) {
 			var name = island.curTask.name;
